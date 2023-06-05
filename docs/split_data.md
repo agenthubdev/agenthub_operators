@@ -1,62 +1,32 @@
 # SplitData
 
-The **SplitData** class is a custom operator that recursively splits text into chunks based on the provided parameters. This operator can be useful for large-scale data processing and text analysis tasks, where the input data needs to be split into smaller, more manageable pieces. The functionality of this operator is mostly carried out in the `run_step` and helper methods.
+**SplitData** is a class derived from `BaseOperator` which is responsible for recursively splitting a given text into multiple chunks. The main functionality is implemented within the `split` helper method, which takes the user-defined `chunk_size` and `chunk_overlap` as input parameters and splits the text into chunks accordingly.
 
-Text splitting is done using the **RecursiveCharacterTextSplitter** class, which is imported at the beginning of the script. Apart from the standard declarations for name, parameters, inputs, and outputs, there are three key methods in this class: `run_step`, `process`, and `split`.
+## Inputs
 
-## run_step
+- `text`: A string representing the input text that needs to be split.
 
-```python
-def run_step(
-        self,
-        step,
-        ai_context: AiContext
-):
-    params = step['parameters']
-    split_text = self.process(params, ai_context)
-    ai_context.set_output('rts_processed_content', split_text, self)
-    ai_context.add_to_log("Successfully split text!")
-```
+## Parameters
 
-`run_step` is the main method that is called when executing this operator. It takes the `step` and `ai_context` objects as inputs and then extracts the parameters from the `step` object. After this, it runs the `process` method with these parameters and the `ai_context`.
+- `chunk_size`: An integer which determines the maximum size of each chunk (Optional, default is 2000).
+- `chunk_overlap`: An integer which determines the number of overlapping characters between adjacent chunks (Optional, default is 100).
 
-Once the processing is done, the method sets the output using the `ai_context.set_output` method and logs that the text has been successfully split.
+## Outputs
 
-## process
+- `rts_processed_content`: A list of strings representing the split text chunks.
 
-```python
-def process(self, params, ai_context):
-    text = ai_context.get_input('text', self)
-    formatted = self.split(params, ai_context, text)
-    return formatted
-```
+## Helper Methods
 
-The `process` method takes the `params` and `ai_context` as inputs and gets the text that needs to be split from the `ai_context` object. Then, it calls the `split` method with the `params`, `ai_context`, and `text`. After splitting is done, it returns the split text.
+### run_step(self, step, ai_context: AiContext)
 
-## split
+This method is responsible for processing the inputs and parameters, and then calling the `process` method to split the text. Once the text has been split, it adds the result to the AI context and logs a success message.
 
-```python
-def split(self, params, ai_context, content):
-    chunk_size = params.get('chunk_size', '2000')
-    chunk_overlap = params.get('chunk_overlap', '100')
+### process(self, params, ai_context)
 
-    if chunk_size:
-        chunk_size = int(chunk_size)
-    else:
-        chunk_size = 2000
+This method takes `params` and `ai_context` as input and then retrieves the input text using `ai_context.get_input()`. It then calls the `split` method to split the text into chunks.
 
-    if chunk_overlap:
-        chunk_overlap = int(chunk_overlap)
-    else:
-        chunk_overlap = 100
-    ai_context.add_to_log(f"Splitting text with {chunk_size} size and {chunk_overlap} overlap")
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
-    texts = text_splitter.split_documents(content)
-    return texts
-```
+### split(self, params, ai_context, content)
 
-The `split` method takes the `params`, `ai_context`, and `content` as inputs and first extracts the `chunk_size` and `chunk_overlap` from the `params`. It then converts these values to integers and sets the defaults if they are not provided.
+This method takes `params`, `ai_context`, and `content` as input and extracts the `chunk_size` and `chunk_overlap` values. If these values are not provided, it defaults to 2000 and 100, respectively. An instance of `RecursiveCharacterTextSplitter` is then created with the provided chunk size and overlap parameters. Finally, the `split_documents()` method of this text splitter object is called with the content to generate the desired chunks.
 
-Next, the method logs the settings that it will use for splitting the text. It then creates an instance of the `RecursiveCharacterTextSplitter` with the specified `chunk_size` and `chunk_overlap`, and calls its `split_documents` method to split the content into smaller chunks.
-
-Finally, the split texts are returned as the output of the method.
+So, by using the **SplitData** class, one can easily and efficiently split a large text into smaller chunks with user-defined size and overlap values.
