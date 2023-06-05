@@ -1,49 +1,28 @@
-# GitHubFileReader
+## **GitHubFileReader**
 
-The **GitHubFileReader** class is a custom operator that reads files from a given GitHub repository, matches them based on a given regular expression, and then saves the file names and content in an output list.
+The `GitHubFileReader` class is a custom operator class that inherits from the `BaseOperator` class. It allows the user to fetch files from a GitHub repository and store them as a list of dictionaries containing file names and contents. The class focuses on the functionality of fetching files from a specific GitHub repository using a provided access token, branch, regex filter, and list of folder paths.
 
-## Main Function:
+**Parameters:**
 
-### run_step
+- `repo_name` (string) : The name of the GitHub repository in the format of "user_name/repository_name".
+- `folders` (string) : A list of folder paths separated by commas.
+- `file_regex` (string) : A regex pattern to filter file names (e.g., '.*\.py').
+- `branch` (string) : The branch of the repository being fetched (default is 'main').
 
-The `run_step()` method serves as the main function for this operator. It is responsible for initiating the process of reading files from the specified GitHub repository.
+**Outputs:**
 
-It takes two parameters:
-- `step`: A dictionary containing all necessary parameters for the task.
-- `ai_context`: An AiContext object, which is used to access secrets and manage inputs and outputs.
+- `files` (list of dictionaries) : A list containing dictionaries of fetched files in which each dictionary has the keys 'name' and 'content' set.
 
-This method starts by reading the parameters from the `step` dictionary and then calls the `read_github_files()` helper method with the given parameters and AiContext object.
+**Methods:**
 
-## Helper Functions:
+- `declare_name` : Returns the name of the operator, which is 'Get files from GitHub'.
+- `declare_category` : Returns the operator category, which is 'CONSUME_DATA'.
+- `declare_parameters` : Returns a list of dictionary objects, each containing parameter-related information such as the name, data type, and placeholder.
+- `declare_inputs` : Returns an empty list as there are no inputs.
+- `declare_outputs` : Returns a list of dictionary objects containing output-related information such as the name and data type.
+- `run_step` : Executes the process of fetching files from the specified GitHub repository using the provided parameters.
+- `read_github_files` : A helper method that reads files from the GitHub repository using the GitHub API. It leverages a breadth-first search approach to fetch files recursively from parent folders. The fetched files are filtered based on the given regex pattern, and the list of dictionaries containing file names and contents is returned.
 
-### read_github_files
+The main functionality of the `GitHubFileReader` class is to fetch files from GitHub repositories using the provided access token, branch, regex filter, and folder paths. It connects to the GitHub API and processes the parameters of the step passed to the `run_step` method. Then, it moves on to the `read_github_files` helper function to read file contents and names from specified folders.
 
-The `read_github_files()` method is responsible for connecting to the specified GitHub repository, parsing the repository contents, and filtering them according to the provided regular expression (if any).
-
-It takes two parameters:
-- `params`: A dictionary containing the parameters necessary for filtering the files.
-- `ai_context`: An AiContext object, which is used to access secrets and manage inputs and outputs.
-
-Inside this function:
-
-1. Repository details (name, folders, regular expression, and branch) are extracted from the `params` dictionary.
-2. A connection to the GitHub API is established using the access token stored in the AiContext object.
-3. A breadth-first search (BFS) algorithm is applied to traverse the repository content, using the `bfs_fetch_files()` function.
-4. Files that match the given regular expression are collected and stored in the `files` list.
-5. The list of files is added to the AiContext output under the key 'files'.
-
-### bfs_fetch_files
-
-The `bfs_fetch_files()` (breadth-first search) function is responsible for traversing the directories and gathering files that match the specified regular expression. The BFS approach is used to ensure that all subdirectories are properly visited and that all matched files are collected.
-
-It takes one parameter:
-- `folder_path`: The path to the directory to be searched.
-
-Inside this function:
-
-1. A queue is used to store unprocessed directory paths. The input path is added to the queue.
-2. While the queue is not empty, the first directory path is dequeued and its content is fetched from the GitHub API.
-3. For each item in the fetched content, if it is a file and its name matches the given regular expression, it is added to the output list.
-4. If an item is a directory, its path is added to the queue for further processing.
-
-This function ensures that all subdirectories are properly searched and that all matched files are collected.
+After fetching the files from the GitHub repository, the class logs this information, including the number of fetched files and the list of file paths. Finally, the `files` output is set by the `ai_context.set_output()` method.
