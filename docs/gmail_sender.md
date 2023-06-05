@@ -1,65 +1,38 @@
 # GmailSender
 
-The `GmailSender` class is a custom operator used for sending emails using Gmail's SMTP server. It has the following important sections:
+The `GmailSender` class is a part of the AgentHub framework and it mainly focuses on sending emails using a Gmail account. This class extends the `BaseOperator` class and deals with the Gmail SMTP API to provide functionality for sending emails with or without HTML content. 
 
-## run_step
+## Functionality
 
-This method gets the necessary parameters and secrets to send an email. The parameters include the recipient's email address and the email body, while the secrets involve the sender's email address and password. It then calls the `send_email` method to send the actual email and sets the output to indicate the email status (whether it was sent successfully or failed).
+This class contains a set of predefined methods that help in defining various aspects of the operator, such as its parameters, inputs, and outputs. These aspects include:
 
-**How it works:**
+### Parameters:
 
-1. Get the recipient's email from the parameters
-2. Set a default email subject as "AgentHub Run Notification"
-3. Get the email body from the input
-4. Fetch the sender's email and password from the secrets
-5. Call the `send_email` method with the email details and capture the email status
-6. Set the output 'email_status' to indicate whether the email was sent successfully or failed
+- **recipient_email**: A string that represents the email address of the recipient.
+- **send_as_html**: A boolean that, when set to `True`, sends the email as HTML instead of plain text. Its default value is `False`.
 
-## send_email
+### Inputs:
 
-This helper function is responsible for sending the actual email using smtplib and MIMEText. It takes the email subject, body, sender, recipients, password, and ai_context as its parameters.
+- **email_body**: A string containing the content of the email body.
 
-**How it works:**
+### Outputs:
 
-1. Create an instance of `MIMEText` with the given email body
-2. Set the email subject, sender, and recipients
-3. Connect to the Gmail SMTP server (smtp.gmail.com) using SSL on port 465
-4. Log in to the SMTP server using the sender's email and password
-5. Send the email using the `sendmail` method
-6. Close the connection to the SMTP server using the `quit` method
-7. Add a log entry in the ai_context to indicate the email was sent successfully or an error occurred
+- **email_status**: A string indicating the status of the email sent. It can be either "Email sent successfully" or "Email sending failed".
 
-**Example Output:**
+## Main Functionality
 
-```markdown
-# GmailSender
+The main functionality of the `GmailSender` class lies in its `run_step` method, which takes in a step configuration, an AI context, and reads the parameter values, such as the recipient's email and whether to send the email as HTML or plain text.
 
-The `GmailSender` class is a custom operator used for sending emails using Gmail's SMTP server. It has the following important sections:
+It then calls the `send_email` method that handles the actual email sending process. This method takes the following parameters:
 
-## run_step
+- **subject**: The subject of the email.
+- **body**: The content of the email body.
+- **sender**: The sender's email address.
+- **recipients**: A list containing the recipient email addresses.
+- **password**: The sender's Gmail account password.
+- **send_as_html**: A boolean indicating whether to send the email as HTML or plain text.
+- **ai_context**: The AI context object where logs can be added.
 
-This method gets the necessary parameters and secrets to send an email. The parameters include the recipient's email address and the email body, while the secrets involve the sender's email address and password. It then calls the `send_email` method to send the actual email and sets the output to indicate the email status (whether it was sent successfully or failed).
+The `send_email` method first creates an instance of the email message (either as an HTML or plain text message), and then establishes a connection to the Gmail SMTP server using the `smtplib.SMTP_SSL` class. It logs in to the sender's Gmail account using the provided email address and password, and then sends the email to the specified recipients. Finally, it logs out from the SMTP server and returns the status of the email sent (either successful or failed).
 
-**How it works:**
-
-1. Get the recipient's email from the parameters
-2. Set a default email subject as "AgentHub Run Notification"
-3. Get the email body from the input
-4. Fetch the sender's email and password from the secrets
-5. Call the `send_email` method with the email details and capture the email status
-6. Set the output 'email_status' to indicate whether the email was sent successfully or failed
-
-## send_email
-
-This helper function is responsible for sending the actual email using smtplib and MIMEText. It takes the email subject, body, sender, recipients, password, and ai_context as its parameters.
-
-**How it works:**
-
-1. Create an instance of `MIMEText` with the given email body
-2. Set the email subject, sender, and recipients
-3. Connect to the Gmail SMTP server (smtp.gmail.com) using SSL on port 465
-4. Log in to the SMTP server using the sender's email and password
-5. Send the email using the `sendmail` method
-6. Close the connection to the SMTP server using the `quit` method
-7. Add a log entry in the ai_context to indicate the email was sent successfully or an error occurred
-```
+In case of any errors, the method logs the error message in the AI context, and returns an "Email sending failed" status.
