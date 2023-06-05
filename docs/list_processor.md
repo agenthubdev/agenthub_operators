@@ -1,63 +1,28 @@
-## ListProcessor
+# ListProcessor
 
-**ListProcessor** is a class that extends the **BaseOperator** class, allowing it to perform different operations on the input list based on the prompt provided. As part of the **BaseOperator** class, the **ListProcessor** must declare its name, parameters, inputs, and outputs.
+The **ListProcessor** class is a custom operator that extends the `BaseOperator` class. It is designed to process a list of elements by feeding the content of each element to an AI model and generating a new list containing the processed content. The main use case of this class is automating the processing of structured data with AI while keeping track of element names.
 
-### Parameters
+## Class Methods
 
-The only parameter of the **ListProcessor** is:
+- **declare_name():** Returns the string 'List Processor' as the identifier for this operator.
+- **declare_category():** Returns the `BaseOperator.OperatorCategory.AI.value`, indicating this operator belongs to the AI category.
+- **declare_parameters():** Defines a single parameter called `prompt` with data type `string`. This is the instruction given to the AI to perform a specific task with the list. For example, "Summarize the contents."
+- **declare_inputs():** Declares a single input called `list` with data type `{name,content}[]`. This is an array of dictionaries containing two fields: `name` (a string) and `content` (the data to be processed).
+- **declare_outputs():** Declares a single output called `result_list` with data type `{name,content}[]`. This is an array of dictionaries with the same structure as the input, but the content field contains the AI-processed data.
 
-- `prompt` (type: string): The user's instruction to the AI for processing the list items.
+## run_step() Method
 
-### Inputs
+The `run_step()` method is the main method responsible for executing the processing logic. It takes two arguments: the `step` containing the operator's parameters, and an instance of `AiContext`, the context in which the AI model runs.
 
-The required input for the **ListProcessor** is:
+1. The method first checks whether the input list `'list'` is available. If not, it adds an error message to the log and returns `False`.
+2. It initializes an empty `result_list` to store the processed content.
+3. For each element `e` in the input list `l`:
+   - Extract its content into the variable `content`.
+   - Create a prompt by appending the content and the instruction from the `prompt` parameter.
+   - Run the AI chat completion using the generated prompt and save the response in the variable `ai_response`.
+   - Add the AI response to the logs.
+   - Append a new dictionary with the same name and the new content (the AI response) to the `result_list`.
+4. Set the output `'result_list'` to the generated `result_list`.
+5. Return `True` to indicate successful execution.
 
-- `list` (type: {name,content}[]): A list of objects containing name and content attributes.
-
-### Outputs
-
-The output of the **ListProcessor** is:
-
-- `result_list` (type: {name,content}[]): A list of processed objects containing name and content attributes.
-
-### run_step Function
-
-The main function of the **ListProcessor** class is `run_step`. This function takes two arguments - `step` and `ai_context`. It first retrieves the input list and checks if it is valid. If the input 'list' is not present in AiContext, it logs an error message and returns `False`.
-
-For each element in the input list, the function constructs a `prompt` using the provided `step['parameters']['prompt']` and passes it to ai_context's `run_chat_completion` method to get the AI response. The result is a processed list containing the new content from the AI and the same element name.
-
-The function then appends this processed element to the `result_list` and sets the output as `result_list` in `ai_context`. If the entire processing is successful, the function returns `True`.
-
-### Example of Generated Markdown
-
-```
-## ListProcessor
-
-**ListProcessor** is a class that extends the **BaseOperator** class, allowing it to perform different operations on the input list based on the prompt provided. As part of the **BaseOperator** class, the **ListProcessor** must declare its name, parameters, inputs, and outputs.
-
-### Parameters
-
-The only parameter of the **ListProcessor** is:
-
-- `prompt` (type: string): The user's instruction to the AI for processing the list items.
-
-### Inputs
-
-The required input for the **ListProcessor** is:
-
-- `list` (type: {name,content}[]): A list of objects containing name and content attributes.
-
-### Outputs
-
-The output of the **ListProcessor** is:
-
-- `result_list` (type: {name,content}[]): A list of processed objects containing name and content attributes.
-
-### run_step Function
-
-The main function of the **ListProcessor** class is `run_step`. This function takes two arguments - `step` and `ai_context`. It first retrieves the input list and checks if it is valid. If the input 'list' is not present in AiContext, it logs an error message and returns `False`.
-
-For each element in the input list, the function constructs a `prompt` using the provided `step['parameters']['prompt']` and passes it to ai_context's `run_chat_completion` method to get the AI response. The result is a processed list containing the new content from the AI and the same element name.
-
-The function then appends this processed element to the `result_list` and sets the output as `result_list` in `ai_context`. If the entire processing is successful, the function returns `True`.
-```
+In summary, the **ListProcessor** class allows you to process a structured list with an AI model based on a given instruction (prompt) and returns a new list with the processed content. The class makes use of several static methods to set the name, category, parameters, inputs, and outputs. The `run_step()` method manages the main processing logic by iterating over the input list, running the AI model on the content, and storing the results in a new list.
