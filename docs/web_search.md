@@ -1,33 +1,30 @@
-# WebSearch
+## WebSearch
 
-This class is designed to perform a web search using the Google Custom Search API. The primary function of this operator is to take input from an AI Context and search the web using the given information.
+**WebSearch** is a class that inherits from the BaseOperator class and provides functionality to search Google for a given query, leveraging Google's Custom Search API to retrieve specified number of search results including links and snippets. The main method this class provides is `run_step()`, which runs the search, retrieves the results, and sets the output to be consumed by further operators.
 
-**Functionality:**
+### Inputs:
+- `query`: A string containing the search query.
 
-- Declare name, parameters, inputs, and outputs - Designed for compatibility with other operators
-- `run_step()` - Perform a web search and provide the results as output
-- Helper functions for internal use by the operator
+### Parameters:
+- `query`: A string containing the search query.
+- `results_count`: An integer specifying the number of search results to be returned.
 
-Below are more in-depth analyses of the crucial functions in this class.
+### Outputs:
+- `search_results`: A list of dictionaries containing search results with the URL in the 'name' key and snippet in the 'content' key.
 
-## run_step
+### Helper methods:
 
-This function is responsible for performing a web search based on the given parameters and AI context. It starts by calling the `gen_prompt()` function, which creates a specific prompt to pass to the AI context. The AI context then generates a chat response using the prompt. Following this, the `google_search()` function is called to perform the web search based on the AI response, which is then processed using additional helper functions.
+- `declare_name()`: A static method that returns the name of the operator as 'Web search'.
+- `declare_category()`: A static method that returns the category of the operator set to BaseOperator.OperatorCategory.CONSUME_DATA.value.
+- `declare_parameters()`: A static method that returns a list of dictionaries, providing information about the parameters that this operator expects.
+- `declare_inputs()`: A static method that returns an empty list to signify that the operator does not accept any inputs.
+- `declare_outputs()`: A static method that returns a list of dictionaries, providing information about the expected output of the operator.
+- `get_urls_and_snippets(google_res)`: A method that takes the Google Search API response (as a dictionary) and extracts the URLs and snippets for each search result, returning them as separate lists.
+- `gen_prompt(step, ai_context)`: A method that generates a prompt for the AI model based on the given query, so it can provide a suitable search query.
+- `google_search(query, num_results, ai_context)`: A method that connects to Google's Custom Search API with the given query and specified number of results, returning a list of URLs as the search results.
 
-## get_urls_and_snippets
+### Usage:
 
-This helper function is called within `run_step()` and is responsible for processing the Google search results by extracting URLs and snippets from the JSON response. It extracts the title and snippet from each search result item and combines them into a single string, then appends the corresponding URLs separately. It ultimately returns two lists - one for the URLs and one for the titles and snippets.
+The class is used to perform a Google search based on user input. It can be instantiated with particular inputs, parameters, and outputs specified by the user.
 
-## gen_prompt
-
-This function constructs a prompt that will be fed to the AI context in order to generate a chat response. It takes the query from either the input provided by the AI context or the `query` parameter in the `step`. The constructed prompt requests intent for a Google search with the given goal or question.
-
-## google_search
-
-This function performs the actual web search using the Google Custom Search API. It takes a query and number of results as input, as well as the AI context, which is used to access the required API keys. The function uses the `customsearch` and `v1` services in the Google API, along with the input parameters, to perform a search and return the response as a JSON object.
-
-Note that the function is designed to handle various errors, such as an invalid API key or general HTTP error, and will return a relevant error message when necessary.
-
-## to_utf8_json_list
-
-This is a utility function that converts a given list of strings to a valid JSON string, while ensuring it is encoded in UTF-8. This may be useful when working with web search results that include non-ASCII characters.
+After running the `run_step()` method with the given `step` parameter and the AI context, it generates a search query using the AI model, sends the query to Google's Custom Search API, retrieves the search results, and finally sets the output containing the search results. These output results can be consumed by other operators in the processing pipeline.
