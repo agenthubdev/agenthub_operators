@@ -1,19 +1,23 @@
-# **IngestData**
+# IngestData
 
-The `IngestData` class is a subclass of `BaseOperator` that is used to ingest data from a given URL or file. It supports web scraping functionality and has several methods for ingesting, processing, and validating the data.
+**IngestData** is a class that extends the `BaseOperator` class. Its primary purpose is to consume data, either from a provided URL or from a file, and make it available for further processing.
 
-## **run_step**
-This method takes in two parameters: `step` (a dictionary containing the parameters of the ingesting operation) and `ai_context`. It calls the `ingest` method with the extracted parameters and passed in context to perform the ingesting operation. This is the primary method of this class and acts as an entry point to start ingesting data.
+## Class Methods
 
-## **ingest**
-This method ingests the data based on the provided data URI. It first checks if the data URI is provided; otherwise, it gets the input URL from the AI context. It stores the ingested URL inside the `ai_context.storage` dictionary. If the provided data URI is a valid URL, it scrapes the text content of the webpage using the `scrape_text` method and sets the output as `'uri_content'`. It then adds a log entry stating the content has been scraped.
+- `declare_name()`: This method declares the name of the operator as "Ingest Data".
+- `declare_category()`: This method declares the category of the operator as "CONSUME_DATA".
+- `declare_parameters()`: This method declares the parameters that this operator accepts, which is an array containing a dictionary with the key "data_uri", and its corresponding data type as "string".
+- `declare_inputs()`: This method declares the inputs this operator works with, which is an array containing a dictionary with the key "input_url", and its corresponding data type as "string".
+- `declare_outputs()`: This method declares the outputs that this operator produces, which is an array containing a dictionary with the key "uri_content", and its corresponding data type as "string".
 
-*Note: In the current implementation, the code is not implemented to handle ingesting files, but it is designed to be extended later.*
+## Helper Methods
 
-## **is_url**
-This method checks if the given `data_uri` is a valid URL. In the current implementation, this function always returns `True` as a hacky workaround. This method can be updated to use a proper regular expression to validate the URL format.
+- `is_url(data_uri)`: This method checks if the given `data_uri` is a valid URL or not. It does this by using a regular expression pattern. Currently, it returns `True` for all inputs as a temporary workaround.
+- `scrape_text(url)`: This method takes a URL, uses `requests` to fetch the content of the website, and then removes any unnecessary tags such as scripts and styles using `BeautifulSoup`. The method then returns the scraped text with all unnecessary tags removed.
 
-## **scrape_text**
-This method is responsible for actually scraping the text from the provided URL. It does this using the `requests` and `BeautifulSoup` libraries. The `get` function of `requests` is used to fetch the contents of the URL, and `BeautifulSoup` is employed to parse the downloaded HTML contents.
+## Main Functionality
 
-During parsing, any `script` or `style` tags are removed, and the text content is extracted from the remaining part of the page. The text is then cleaned up by stripping out extra spaces and joining the lines together with newlines. The cleaned-up text is returned as the final output of this method.
+The main functionality of this class is within the `run_step()` and `ingest()` methods.
+
+- `run_step(step, ai_context)`: This method takes the step configuration and the AI context, and calls the `ingest()` method to process the data.
+- `ingest(params, ai_context)`: This method is responsible for ingesting the data from the given URL or file. It checks if the `data_uri` parameter is provided; if not, it fetches the input URL from the AI context. The ingested URL is then stored in the AI context's storage. It checks if the provided link is a URL using the `is_url()` helper method, and if it is, it scrapes the text using the `scrape_text()` helper method. The scraped text is then set as the output with the key name "uri_content", and a log is added with the message "Content from {data_uri} has been scraped.".
