@@ -1,33 +1,38 @@
 # GmailReader
 
-**GmailReader** is a class that extends the **BaseOperator** and is used to read emails from a Gmail account. It connects to the IMAP server and fetches the emails based on the provided parameters.
+**GmailReader** is a class that extends the **BaseOperator**. It's main purpose is to connect to a Gmail account, read emails (consuming data), and optionally upload attachments to Google Cloud Storage for further processing.
 
-## run_step
+## Inputs
+- **email_id** (string, optional): If provided, only the specific email with the given email_id will be retrieved. If not provided, unread emails in the inbox will be retrieved.
 
-The function `run_step` is the main entry point for the class. 
+## Parameters
+- **email** (string): The email address that the GmailReader will connect to.
+- **password** (string): The password for the email account.
+- **mark_as_read** (boolean): If set to true, the email(s) will be marked as read after being processed. If not provided or set to false, the emails will remain unread.
 
-1. It retrieves the email address, password, and mark_as_read flag from the parameters provided.
-2. It calls the `read_emails` function with these parameters to fetch the email data.
-3. The fetched email data is then set as the output of the AI context.
+## Outputs
+- **email_data** (string[]): A list containing the extracted email data that includes the following information for each email: id, From, Subject, Date, Body, and the uploaded file names (if any).
+- **attached_file_names** (string[]): A list containing the attached files' names found in the emails.
 
-## read_emails
+## Helper Methods
 
-The `read_emails` function is responsible for connecting to the Gmail IMAP server, logging into the account, and fetching the email data.
+### read_emails
 
-1. It logs into the Gmail account using the provided email address and password.
-2. It selects the "inbox" folder and searches for all unread messages.
-3. If there are any unread messages, it fetches the first unread email.
-4. It extracts the email information (From, Subject, Date, and Body) and stores it in a dictionary `email_info`.
-5. The email data is then converted to a string and added to the AI context log.
-6. If the `mark_as_read` flag is True, the email is marked as read.
-7. It logs out of the Gmail account and returns the email data.
+`read_emails` is responsible for handling the main functionality of the GmailReader, connecting to the Gmail account, reading emails, uploading attachments to Google Cloud Storage, and extracting relevant data. It takes the following parameters:
 
-## get_body_from_part
+- **user** (str): The email address.
+- **password** (str): The password for the email account.
+- **mark_as_read** (bool): Indicates if the emails should be marked as read after processing them.
+- **email_id** (str): If provided, only the email with the given email_id will be retrieved. If not provided, unread emails in the inbox will be retrieved.
+- **ai_context**: An object to access and manage the context of the AI run.
 
-The `get_body_from_part` function is a helper function that extracts the plain text body of an email.
+It returns two lists: `all_email_data` which contains the extracted email data, and `all_uploaded_files` which contains the file names of the uploaded attachments.
 
-1. It checks if the part contains a multipart email. If so, it recursively calls the `get_body_from_part` function again for each subpart.
-2. If the content type is 'text/plain', it extracts the text, decodes it using the charset (if provided), and cleans it up by removing empty lines and unnecessary spaces.
-3. The cleaned up text is then returned as the email body.
+### upload_attachments
 
-By using the **GmailReader** class, it becomes easy to fetch unread emails from a Gmail account while also providing options to mark them as read.
+`upload_attachments` is a helper method to upload the attachments found in the emails to Google Cloud Storage, using the provided `file_paths` and `ai_context`. It takes the following parameters:
+
+- **file_paths**: A list of file paths pointing to the attachments to be uploaded.
+- **ai_context**: An object to access and manage the context of the AI run.
+
+It returns a list `uploaded_files` containing the file names of the uploaded attachments.
