@@ -1,101 +1,41 @@
-## **`IngestDocs` (class)**
+# IngestDocs
 
-The `IngestDocs` class is a `BaseOperator` that allows for the ingestion of documentation content. It scrapes the content of the specified documentation and saves it into the AI context. It works mainly in the `run_step` and its following helper functions.
+The **IngestDocs** class is responsible for ingesting documentation content from a given URL or file. This class is a subclass of the BaseOperator class and is categorized under the CONSUME_DATA operator category.
 
-**`run_step` method**
+## Parameters
 
-This method calls the `ingest` function by passing the step parameters and ai context. It serves as the starting point for the documentation ingestion process.
+- `docs_uri`: A string representing the URL of the documentation to be ingested.
 
-```python
-def run_step(
-        self,
-        step,
-        ai_context: AiContext,
-):
+## Inputs
 
-    params = step['parameters']
-    self.ingest(params, ai_context)
-```
-**`ingest` method**
+- None
 
-This method takes care of checking whether the provided documentation URL is valid or not. If it's a valid URL, it loads the documentation content and sets it to the AI context. It also adds a log to indicate the content from the URL has been successfully scraped.
+## Outputs
 
-```python
-def ingest(self, params, ai_context):
+- `docs_content`: A string containing the ingested documentation content.
 
-    docs_uri = params.get('docs_uri')
-    ai_context.storage['ingested_docs_url'] = docs_uri
-    if self.is_url(docs_uri):
-        # text = self.load_docs(docs_uri) (commented out)
-        text = asyncio.run(self.load_docs(docs_uri))
-        ai_context.set_output('docs_content', text, self)
-        ai_context.add_to_log(f"Content from {docs_uri} has been scraped.")
-    else:
-        pass  # leave unimplemented for ingesting files later
-```
+## Functionality
 
-**`is_url` method**
+The main method in the IngestDocs class is the `ingest()` method, which takes the parameters and the AI context as inputs, and ingests the documentation content using asyncio and aiohttp for asynchronous web scraping.
 
-This is a helper method to check whether the given URL is valid or not. It could include more URL validation logic if needed.
+### Helper Methods
 
-```python
-def is_url(self, docs_uri):
-    # add url validation maybe?
-    return True
+- `is_url(docs_uri)`: This method checks if the provided `docs_uri` is a valid URL.
+- `download_file(session, url, output_directory)`: This method takes a session, URL, and an output_directory, and downloads the file from the URL into the output_directory.
+- `load_docs(url)`: This method takes a URL, scrapes, and downloads the relevant documentation files using the helper methods `download_file()` and `is_url()`. It then loads the ingested content using the ReadTheDocsLoader.
+
+## Example Usage
+
+1. Create an instance of the IngestDocs class.
+2. Call the `ingest()` method with the appropriate parameters and AI context.
+3. Access the ingested documentation content from the AI context through the `docs_content` output.
+
+```markdown
+IngestDocs_obj = IngestDocs()
+params = {'docs_uri': 'https://python.langchain.com/en/latest/'}
+ai_context = AiContext()
+IngestDocs_obj.ingest(params, ai_context)
+docs_content = ai_context.get_output('docs_content', IngestDocs_obj)
 ```
 
-**`Async helper functions:`**
-
-**`download_file` method**
-
-This method (defined as async) downloads the specified file and stores it in the output directory. It utilizes aiohttp to handle the file download efficiently.
-
-```python
-async def download_file(self, session, url, output_directory):
-    async with session.get(url) as response:
-        if response.status == 200:
-            file_name = os.path.join(output_directory, os.path.basename(url))
-            file_content = await response.read()
-            with open(file_name, 'wb') as file:
-                file.write(file_content)
-            print(f"Downloaded: {url}")
-        else:
-            print(f"Failed to scrape: {url}")
-```
-
-**`load_docs` method**
-
-This method handles the actual loading of the specified documentation content. It does so by creating a temporary directory, opening an aiohttp session, gathering the links to the documentation files, and downloading them using the `download_file` method.
-
-```python
-async def load_docs(self, url):
-    scraped_count = 0
-    with tempfile.TemporaryDirectory() as temp_dir:
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url) as response:
-                if response.status == 200:
-                    soup = BeautifulSoup(await response.text(), "html.parser")
-                    tasks = []
-
-                    for link in soup.find_all("a", href=True):
-                        file_url = urljoin(url, link['href'])
-                        if file_url.endswith('.html'):
-                            tasks.append(self.download_file(session, file_url, temp_dir))
-
-                    await asyncio.gather(*tasks)
-                else:
-                    print("Failed to retrieve the page.")
-    loader = ReadTheDocsLoader(temp_dir, features='html.parser', encoding='utf-8')
-    data = loader.load()
-    content = ""
-    for doc in data:
-        content += doc.page_content + "\n"
-
-    return data
-```
-
-This method essentially goes through several processes, including creating a temporary directory, establishing an HTTP session, parsing the content of the URL using BeautifulSoup, gathering relevant documentation links, and downloading the content of those links. Finally, it aggregates the content and returns the consolidated data.
-
-**Summary**
-
-The `IngestDocs` class provides a straightforward way to scrape, download, and process documentation from a given URL. The main method is `run_step`, which calls the `ingest` method. The class has various helper methods such as `is_url`, `download_file`, and `load_docs` to support the main functionality. Asyncio and aiohttp are used to improve performance and efficiency during the documentation loading process.
+The `docs_content` variable will now contain the ingested documentation content as a string. This can then be utilized as needed, such as copying into a markdown generator for further processing or as documentation content in a project README file.
