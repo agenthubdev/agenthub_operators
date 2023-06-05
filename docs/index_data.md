@@ -1,39 +1,27 @@
 # IndexData
 
-The **IndexData** class is responsible for transforming a given input text into a vector index. The vector index is a dictionary, with keys being embeddings for text chunks and values being the text chunks themselves. The class is derived from the `BaseOperator` and provides a way to split the text into chunks and obtain their embeddings. The main focus of the analysis will be the `run_step` method and the helper functions used in it.
+**Index Data** is a class that extends the `BaseOperator` and is responsible for indexing the input text into chunk embeddings. This can be useful when dealing with large texts and requiring efficient operations on text data.
 
-**EMBEDDING_CTX_LENGTH** is set to 1000. This is the size of each chunk of text in terms of tokens, chosen to balance speed and accuracy. `EMBEDDING_ENCODING` is set to 'cl100k_base', which is the encoding used for tokenizing the text.
+The main function of this class is `run_step`, which takes the input text, cleans it, and generates the vector index by generating embeddings for chunks of the text. The class also includes helper methods to clean text, create batches, and generate chunks for processing.
 
-## run_step
+## Parameters
 
-The `run_step` method is the core of the IndexData class. It is responsible for:
+The `IndexData` class does not require any parameters.
 
-1. Cleaning the input `text` by replacing newline characters with spaces.
-2. Calling the `len_safe_get_embedding()` function to obtain embeddings for input text chunks.
-3. Setting the output `vector_index` with the embeddings dictionary obtained.
-4. Adding a log message with the number of chunk embeddings generated.
+## Inputs
 
-## clean_text
+- `text`: A string that represents the text to be processed and indexed.
 
-The `clean_text` function is a simple helper function that removes newline characters from the input text and replaces them with spaces.
+## Outputs
 
-## batched
+- `vector_index`: A dictionary containing the vector index of the text, where each key is a string representation of the embedding vector, and the value is the corresponding chunk of text.
 
-The `batched` function is a generator that takes an iterable object and a batch size, `n`. It splits the iterable into sequential batches of size `n`. It raises a ValueError if `n` is less than 1.
+## Helper Methods
 
-## chunked_tokens
+- `clean_text(self, text)`: Removes newline characters from the input text and returns the cleaned text.
 
-The `chunked_tokens` function is a generator that tokenizes the input `text` given the specified `encoding_name` and `chunk_length`. It splits the tokenized text into sequential chunks of length `chunk_length`. 
+- `batched(self, iterable, n)`: Yields batches of size `n` from an iterable.
 
-## len_safe_get_embedding
+- `chunked_tokens(self, text, encoding_name, chunk_length)`: Yields chunks of size `chunk_length` for a given input text and encoding_name. This method uses the `batched()` method to create chunks and the `tiktoken` library to handle the encoding.
 
-The `len_safe_get_embedding` function is responsible for obtaining embeddings for a given input `text`. It has the parameters `max_tokens` and `encoding_name` which default to `EMBEDDING_CTX_LENGTH` and `EMBEDDING_ENCODING` respectively.
-
-The function works as follows:
-
-1. It iterates over the chunks obtained using the `chunked_tokens()` function.
-2. For each chunk of text, it calls the `embed_text()` function from the `AiContext` object to obtain the embedding.
-3. It converts the numpy array resulting from the embedding to a tuple, which will be the key in the `chunk_embeddings` dictionary.
-4. It adds the chunk of text as the value for the corresponding key (embedding) in the `chunk_embeddings` dictionary.
-
-Finally, it returns the `chunk_embeddings` dictionary.
+- `len_safe_get_embedding(self, text, ai_context, max_tokens=EMBEDDING_CTX_LENGTH, encoding_name=EMBEDDING_ENCODING)`: Generates chunk embeddings for the input text. It divides the input text into chunks by calling the `chunked_tokens()` method, gets the embeddings for each chunk using the `ai_context.embed_text()` method, and creates a dictionary with tuple(embedding) as keys and the corresponding chunks as values.
