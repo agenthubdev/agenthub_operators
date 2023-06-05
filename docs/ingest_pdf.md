@@ -1,25 +1,31 @@
 # IngestPDF
 
-The **IngestPDF** class is a part of a larger system and acts as a *BaseOperator*. It is designed to handle the ingestion of PDF files found at a given URL and extract their content. The code leverages various libraries and helper functions to efficiently process the input PDF and store relevant metadata.
+The **IngestPDF** class is an extension of the `BaseOperator` and focuses on ingesting PDF files either through a direct upload, a URL or from your local storage. It extracts the content from the PDF and provides output as plain text.
 
-## Functions
+## Key Methods
 
-### run_step
+- `declare_name()`: declares the name of the operator as 'Ingest PDF'
+- `declare_category()`: sets the operator's category to 'CONSUME_DATA.value'
+- `declare_allow_batch()`: returns `True` if batch processing is allowed
+- `declare_parameters()`: defines and returns the required parameters such as 'pdf_uri', 'uploaded_file_name'
+- `declare_inputs()`: defines the optional inputs such as 'file_name'
+- `declare_outputs()`: defines the output key 'pdf_content' which is the extracted text from the PDF
+- `run_step(step, ai_context)`: main function that extracts the content from the given PDF file
+- `ingest(pdf_uri, file_name, uploaded_file_name, ai_context)`: ingests a PDF file from either direct upload, URL or from the local storage
+- `is_url(pdf_uri)`: checks if the provided `pdf_uri` parameter is a valid URL
+- `load_pdf_from_uri(url)`: loads the content of the PDF from a URL
+- `load_pdf_from_storage(file_name, generated_this_run, ai_context)`: loads the content of the PDF from your local storage (either generated this run or not)
+- `read_pdf(pdf)`: reads the content of the PDF and returns it as plain text
 
-The `run_step` function initiates the PDF ingestion process. It takes in *step* (the current step in the workflow), *ai_context* (an instance of the *AiContext* class), and receives parameters needed for the ingestion process to proceed. This function essentially delegates the task to the `ingest` function, where the actual code execution happens.
+## Parameters
 
-### ingest
+- `pdf_uri`: string, URL of the PDF file (optional)
+- `uploaded_file_name`: string, the name of the PDF file previously uploaded to the workspace (optional)
 
-The `ingest` function is the main entry point for the ingestion process. It works with the *ai_context* object to store, manipulate, and retrieve important data at each step in the ingestion pipeline. If the given *pdf_uri* is a URL, the function proceeds by calling the `load_pdf` helper function, which is responsible for downloading and processing the PDF content.
+## Inputs
 
-Upon successful content extraction from the PDF, the `ingest` function sets the output data using the *ai_context*, which can be utilized by other modules in the system.
+- `file_name`: string, the name of the PDF file provided as input (optional)
 
-### is_url
+## Outputs
 
-The `is_url` function performs a simple check to determine whether the given *pdf_uri* is a URL. The current implementation always returns *True*, but this could be improved by adding URL validation, if needed.
-
-### load_pdf
-
-The `load_pdf` function takes a URL as input, downloads the file, and extracts its contents. The `requests` library is used to stream the content of the file, and the PDF is temporarily stored in a `tempfile` to allow for reading by the *PyMuPDFLoader* provided by the *langchain.document_loaders* library.
-
-Once the PDF is loaded, the function iterates through the extracted document content and returns it as an array.
+- `pdf_content`: string, the extracted text from the PDF
