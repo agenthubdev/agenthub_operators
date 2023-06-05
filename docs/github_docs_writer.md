@@ -1,29 +1,37 @@
 # GitHubDocsWriter
 
-The **GitHubDocsWriter** class is responsible for creating and updating a GitHub repository's documentation based on provided code content. This class extends the *BaseOperator* class and focuses on the `run_step` function, where the main workflow is implemented, as well as a helper function `create_branch_with_backoff`.
+The `GitHubDocsWriter` class is a custom operator that focuses on providing **structured documentation** for the code in markdown format. It takes into consideration the comments within the code and offers a summary of the functionality. By digesting the code into an accessible format, the class contributes to an easily comprehended understanding of the code's purpose and operation.
 
-## run_step
+## Key functionalities:
 
-The `run_step` function performs the following steps:
+- Declare the **name**, **category**, **parameters**, **inputs**, and **outputs** of the operator.
+- *run_step()* method to create a branch, modify files, and create a pull request.
+- *create_branch_with_backoff()* helper method to create a branch with exponential backoff in case of errors.
 
-1. Retrieve the necessary parameters, inputs, and secrets, such as `repo_name`, `docs_folder_name`, and the GitHub access token.
-2. Connect to the GitHub API and obtain references to the original repository and the forked repository.
-3. Create a new branch in the forked repository, named with the format "agent_hub_\<run_id\>".
-4. Iterate through the provided code content and create or update the documentation files in markdown format within the specified `docs_folder_name`.
-5. Create a pull request to merge the changes from the forked repository back into the original repository.
+## Parameters:
 
-### Creating and Updating Documentation Files
+1. `repo_name`: Repository name in the format `user_name/repository_name`.
+2. `docs_folder_name`: Name of the folder where the documentation files will be stored.
 
-For each code content element provided, the function extracts the file path and converts the file extension to `.md` for markdown files. It then generates a commit message containing the file path and a reference to the AgentHub run URL, making it easy to trace the origin of the changes.
+## Inputs:
 
-If the documentation file already exists in the original repository, it updates the file in the forked repository with new content provided. Otherwise, it creates a new file in the forked repository.
+- `code_content`: An array of objects containing the name and content of the code files.
 
-## create_branch_with_backoff
+## Outputs:
 
-This is a helper function that attempts to create a new branch in the forked repository with a specified name and base branch commit SHA. It uses an exponential backoff strategy in case of errors, up to a maximum number of retries. The initial delay and backoff factor can be configured.
+- No Outputs.
 
-The function is called within the `run_step` function to create the new branch for adding or updating the documentation files.
+### Purpose of the class:
 
-## Summary
+This class aims to:
 
-In summary, the **GitHubDocsWriter** class is a powerful tool for automating the creation and updating of GitHub documentation based on provided code content. By extending the `BaseOperator` class and utilizing the GitHub API, it simplifies the workflow and reduces the need for manual intervention, making it easier to keep your documentation up-to-date and in sync with your codebase.
+1. Create a new branch in a forked version of the input repository.
+2. Generate structured documentation in the form of Markdown files for inputted code files, considering comments and providing an explanation of the functionality.
+3. Add or update the documentation files in the new branch.
+4. Create a pull request to merge the changes in the new branch into the original repository.
+
+### Helper Method's Functionality:
+
+- `create_branch_with_backoff`: This method tries to create a branch with a specified name in the forked repository. In case of errors, it retries the operation with exponential backoff and a random jitter, thus avoiding excessive retries in a short period. The parameters `max_retries` and `initial_delay` allow to fine-tune the backoff behavior if needed.
+
+**Note**: The generated output will be in unrendered markdown format, which allows it to be easily copied into a markdown generator.
