@@ -1,51 +1,29 @@
 # GitHubMergeRequester
 
-The **GitHubMergeRequester** is a custom operator that creates merge requests on GitHub repositories. This operator works by receiving a list of differences between the original repository and a forked repository, then creating a new branch in the forked repository, applying those changes, and finally submitting a merge request to the original repository.
+**GitHubMergeRequester** is a class that inherits from the *BaseOperator* and is designed to create a GitHub merge request for a specified repository and branch. It takes a list of differences (file names and their content) as input and applies these changes to a new branch created in a forked version of the repository. Finally, it creates a pull request to merge the new branch in the forked repository into the original branch.
 
-## Import Libraries
+## Inputs
 
-The following libraries are imported:
+- **list_of_diffs**: {name, content}[] – the input data containing a list of dictionaries with 'name' (file name) and 'content' (file content).
 
-- **time**: Used for handling the delay between retries when creating a branch.
-- **random**: Used for generating random numbers.
-- **github**: GitHub Python library for interacting with the GitHub API.
+## Parameters
 
-## Initialization
+- **repo_name**: string – the repository name in the format "user_name/repository_name".
+- **branch**: string – the branch name that the merge request will be based on (default is "main").
 
-The `GitHubMergeRequester` class extends the `BaseOperator` class.
+## Outputs
 
-## Declare Name
+- The class does not have any declared outputs. However, it returns a log message with the URL of the created pull request.
 
-`declare_name()` returns a string, representing the operator's name, which is 'Create GitHub merge requests'.
+## Main Functionality
 
-## Nested Functions
+- **run_step**: The main function responsible for creating a GitHub merge request for a specified repository and branch.
+    1. Fetches the repository, forks it, and creates a new branch.
+    2. Updates the files in the new branch with the new content from the input 'list_of_diffs'.
+    3. Creates a pull request to merge the new branch into the original branch.
 
-### run_step
+## Helper Function
 
-The `run_step` method takes a `step` and an `ai_context` and runs the main logic of the operator. Specifically, it:
+- **create_branch_with_backoff**: A static method that helps in creating a branch on a forked repository. If the branch creation fails, it retries with an exponential backoff algorithm up to a maximum number of retries.
 
-1. Retrieves the `repo_name` and `branch` from the given parameters.
-2. Retrieves the input list of differences between the original and forked repositories.
-3. Authenticates with the GitHub API using an access token.
-4. Retrieves the base repository using the provided `repo_name`.
-5. Creates a fork of the base repository.
-6. Retrieves the original branch in the base repository.
-7. Creates a new branch in the forked repository with a unique identifier based on the AI context run ID. This is done using the `create_branch_with_backoff()` method to handle retries and delays.
-
-8. Adds the base URL of the agent hub to the new run context.
-9. Iterates over the list of differences and applies each difference to the new branch in the forked repository by updating the file with the new content and relevant commit message.
-10. Creates a pull request from the new branch in the forked repository to the base branch of the original repository, including the URL of the agent hub in the title and body of the PR.
-11. Logs the created pull request URL to the AI context.
-
-### create_branch_with_backoff
-
-The `create_branch_with_backoff()` method is a helper function to handle the creation of a new branch in the forked repository with retry mechanism and exponential backoff delay in case of failures. This function takes a forked repository, new branch name, base branch commit SHA, maximum retries, and initial delay. It performs the following steps:
-
-1. Sets the initial delay value and the number of retries done.
-2. Loops until the number of retries reaches the maximum retries.
-   a. Tries to create a new branch in the forked repository based on the new branch name and base branch SHA.
-   b. If it succeeds, the branch is created and the function returns.
-   c. If there's an exception, and the number of maximum retries has been reached, re-raises the exception.
-   d. Calculates the sleep time for the next try based on the current retry count and sleeps for that duration before retrying.
-
-This concludes the summary of the **GitHubMergeRequester** operator, which creates merge requests on GitHub repositories based on input differences and handles retries with backoff delays in case of failures when creating new branches.
+That's a brief overview of the **GitHubMergeRequester** class and its functionalities.
