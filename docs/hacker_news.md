@@ -1,31 +1,15 @@
-# ScrapeHackerNews
+## ScrapeHackerNews
 
-**ScrapeHackerNews** is a class that extends `BaseOperator`. It is designed to scrape news from https://news.ycombinator.com/ and filter them based on the provided keywords and number of pages, returning a dictionary containing the title and link of each article.
+The **ScrapeHackerNews** class is a part of a web scraping program that retrieves news articles from the '*Hacker News*' website. The class filters the scraped data based on provided **keywords** and a specific number of **pages** (limited to 5 pages). To avoid irrelevant articles, it does not include news with specific excluded words like 'AskHN', 'ShowHN', 'LaunchHN', etc.
 
-## Parameters
+The class consists of some essential helper methods to perform the task:
 
-- `keywords` (optional): A JSON list containing keywords to filter the news articles. Only articles containing at least one keyword in their title will be included in the results.
-- `num_pages`: The number of pages to scrape from the website (maximum of 5 pages).
+- `declare_name()`: Returns the name of the operator, 'Scrape Hacker News'.
+- `declare_category()`: Returns the operator's category, which is 'CONSUME_DATA'.
+- `declare_parameters()`: Contains the parameters required for the operation, including **keywords** (list of words used for filtering) and the number of **pages** to scrape (integer, max 5 pages).
+- `declare_inputs()`: Returns an empty list as there are no inputs required for this operator.
+- `declare_outputs()`: Returns output information, which is a JSON object containing the titles and links of filtered news articles.
+- `run_step()`: Executes the web scraping operation based on the given parameters (keywords and num_pages) and AiContext (ai_context).
+- `scrape_hacker_news()`: The main logic for iterating through the provided pages, filtering by the given keywords and avoiding specific excluded words.
 
-## Inputs
-
-There are no inputs required for this class.
-
-## Outputs
-
-- `title_link_dict`: A JSON dictionary containing the title and link of each filtered news article.
-
-## Functionality
-
-The class contains a single helper method, `scrape_hacker_news`, which takes two parameters: `params` and `ai_context`. This method is responsible for carrying out the actual web scraping and filtering based on the provided parameters.
-
-1. The method first checks whether the provided `num_pages` is within the allowed maximum limit of 5 pages. If not, it logs an error message and returns without processing further.
-2. It initializes an empty dictionary `title_link_dict` which will store the filtered news articles.
-3. It loops through the specified number of pages, and for each page, sends a request to the corresponding URL.
-4. The method uses the BeautifulSoup library to parse the HTML response and extract the news items.
-5. Within each news item, it extracts the title and link by selecting the appropriate HTML elements.
-6. It filters the news items based on the provided keywords (if any) and a list of excluded words (such as 'AskHN', 'ShowHN', and 'LaunchHN').
-7. The filtered news items are added to the `title_link_dict` dictionary with their titles as keys and their links as values.
-8. Finally, the `title_link_dict` is set as the output of the class, and a log message is added to indicate the number of pages that have been scraped and filtered.
-
-The **ScrapeHackerNews** class provides an efficient way to scrape and filter news articles from the popular Hacker News website based on user-defined parameters. The resulting output is a JSON dictionary containing the titles and links of the filtered articles, ready for further processing or consumption by other application components.
+By using this class, you can effectively filter and retrieve news articles from the '*Hacker News*' website based on your interests and requirements.
