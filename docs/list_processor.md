@@ -1,28 +1,21 @@
 # ListProcessor
 
-The **ListProcessor** class is a custom operator that extends the `BaseOperator` class. It is designed to process a list of elements by feeding the content of each element to an AI model and generating a new list containing the processed content. The main use case of this class is automating the processing of structured data with AI while keeping track of element names.
+The **ListProcessor** is a class derived from the `BaseOperator`. It is aimed to process a list of elements and to perform a specific action on each element indicated by the user's input through a _prompt_ parameter.
 
-## Class Methods
+It starts by fetching the list of elements from the `AiContext`. It then iterates through the list, running an AI action specified in the prompt for each element, and later adds the result to a result list which is set as output in the `AiContext`.
 
-- **declare_name():** Returns the string 'List Processor' as the identifier for this operator.
-- **declare_category():** Returns the `BaseOperator.OperatorCategory.AI.value`, indicating this operator belongs to the AI category.
-- **declare_parameters():** Defines a single parameter called `prompt` with data type `string`. This is the instruction given to the AI to perform a specific task with the list. For example, "Summarize the contents."
-- **declare_inputs():** Declares a single input called `list` with data type `{name,content}[]`. This is an array of dictionaries containing two fields: `name` (a string) and `content` (the data to be processed).
-- **declare_outputs():** Declares a single output called `result_list` with data type `{name,content}[]`. This is an array of dictionaries with the same structure as the input, but the content field contains the AI-processed data.
+## Key Sections
 
-## run_step() Method
+- **declare_name**: Returns the _List Processor_ as the name of the operator.
 
-The `run_step()` method is the main method responsible for executing the processing logic. It takes two arguments: the `step` containing the operator's parameters, and an instance of `AiContext`, the context in which the AI model runs.
+- **declare_category**: Returns the AI category from `BaseOperator.OperatorCategory`.
 
-1. The method first checks whether the input list `'list'` is available. If not, it adds an error message to the log and returns `False`.
-2. It initializes an empty `result_list` to store the processed content.
-3. For each element `e` in the input list `l`:
-   - Extract its content into the variable `content`.
-   - Create a prompt by appending the content and the instruction from the `prompt` parameter.
-   - Run the AI chat completion using the generated prompt and save the response in the variable `ai_response`.
-   - Add the AI response to the logs.
-   - Append a new dictionary with the same name and the new content (the AI response) to the `result_list`.
-4. Set the output `'result_list'` to the generated `result_list`.
-5. Return `True` to indicate successful execution.
+- **declare_parameters**: Returns an array containing the `prompt` parameter which is a string type that tells the AI what to do with the list elements.
 
-In summary, the **ListProcessor** class allows you to process a structured list with an AI model based on a given instruction (prompt) and returns a new list with the processed content. The class makes use of several static methods to set the name, category, parameters, inputs, and outputs. The `run_step()` method manages the main processing logic by iterating over the input list, running the AI model on the content, and storing the results in a new list.
+- **declare_inputs**: Returns an array containing the `list` input of data type `{name,content}[]`.
+
+- **declare_outputs**: Returns an array containing the `result_list` output of data type `{name,content}[]`.
+
+- **run_step**: This is the main method, which takes _step_ and _ai_context_ as inputs, processes the list according to the given prompt and adds the resulting list to the `AiContext`.
+
+The general purpose of this class is to provide a way to process a list of elements based on the prompt that specifies the action to be taken on these elements. The class interacts using the `AiContext` for inputs and outputs, and fetches AI responses for the given prompts.
