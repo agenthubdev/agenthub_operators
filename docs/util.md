@@ -1,58 +1,33 @@
-# Code Documentation
+## TikToken and Text Analysis Functions
 
-This documentation explains the code provided in a structured format, with an emphasis on the helper functions and their functionality.
+This code contains several functions and methods related to text analysis using tiktoken and calculating the cosine similarity for vector comparison. Below are the major components and a brief description of their functionality.
 
-## **get_max_tokens_for_model**
+**1. `get_max_tokens_for_model(model_name: str) -> int`:**
 
-This function receives a `model_name` as input and returns the maximum number of tokens supported by that model.
+This function accepts a model name as input and returns the maximum number of tokens allowed for that model. If the specified model is not supported, an error will be raised. Currently supported models and their corresponding token limits are:
 
-**Parameters:**
-- `model_name` (str): The name of the model.
+- **gpt-3.5-turbo**: 4096 tokens
+- **gpt-4**: 8192 tokens
+- **gpt-4-32k**: 32768 tokens
 
-**Returns:**
-- `max_tokens` (int): The maximum number of tokens supported by the given model.
+**2. `cosine_distance(v1, v2)`:**
 
-## **cosine_distance**
+This function calculates the cosine distance between two vectors v1 and v2. It returns a scalar value that represents the similarity or distance between the two input vectors.
 
-This function calculates the cosine distance between two input vectors `v1` and `v2`.
+**3. `count_tokens(s: str, model_name: str) -> int`:**
 
-**Parameters:**
-- `v1` (array-like): The first input vector.
-- `v2` (array-like): The second input vector.
+This function accepts a string `s` and a model name, then returns the number of tokens in the string using the specified model's encoding.
 
-**Returns:**
-- `distance` (float): The cosine distance between the two input vectors.
+**Hybrid Search Helper Functions:**
 
-## **count_tokens**
+The following helper functions are used to facilitate a hybrid search operation:
 
-This function counts the number of tokens in the input string `s` using the encoding specified by the `model_name`.
+**4. `sort_chunks_by_similarity(query_emb, vector_index)`:**
 
-**Parameters:**
-- `s` (str): The input string to count tokens in.
-- `model_name` (str): The name of the model to use for encoding.
+This function accepts a query embedding and a vector index (dictionary) containing embeddings and their associated texts. It calculates the cosine similarity between the query embedding and each embedding in the dictionary, then sorts these items in increasing order of similarity such that the most similar items are given precedence.
 
-**Returns:**
-- `num_tokens` (int): The number of tokens in the input string.
+**5. `select_most_relevant_chunks(sorted_chunks, token_budget, model_name)`:**
 
-## **sort_chunks_by_similarity**
+This function takes the sorted chunks of text (from the previous function), a token budget and a model name as input. It iterates through the sorted chunks and adds them to the list of selected chunks until the specified token budget is reached or exceeded. As a result, the selected chunks will be the most relevant chunks of text within the token budget limit, based on their similarity to the query embedding.
 
-This function sorts a list of text chunks by their similarity to a given query embedding.
-
-**Parameters:**
-- `query_emb` (array-like): The query embedding to compare text chunks against.
-- `vector_index` (dict): A dictionary that maps embedding tuples to text chunks.
-
-**Returns:**
-- `chunks` (list): A sorted list of tuples containing the negative similarity, embedding tuple, and corresponding text chunk.
-
-## **select_most_relevant_chunks**
-
-This function selects the most relevant text chunks based on the sorted chunks, a token budget, and a given model name.
-
-**Parameters:**
-- `sorted_chunks` (list): A sorted list of tuples containing the negative similarity, embedding tuple, and corresponding text chunk.
-- `token_budget` (int): The maximum number of tokens allowed for the output.
-- `model_name` (str): The name of the model to use for encoding.
-
-**Returns:**
-- `selected_chunks` (list): A list of the most relevant text chunks within the token budget.
+The return value is a list of the selected chunks represented as strings.
