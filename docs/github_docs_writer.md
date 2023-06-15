@@ -1,37 +1,37 @@
 # GitHubDocsWriter
 
-The `GitHubDocsWriter` class is a custom operator that focuses on providing **structured documentation** for the code in markdown format. It takes into consideration the comments within the code and offers a summary of the functionality. By digesting the code into an accessible format, the class contributes to an easily comprehended understanding of the code's purpose and operation.
+**GitHubDocsWriter** is a class that inherits from the `BaseOperator`. This class is responsible for creating and updating markdown files in a specified repository folder with provided content. It forks the target repository, makes changes in the fork, and then creates a pull request to merge the changes back into the original repository.
 
-## Key functionalities:
+## Inputs, Parameters, and Outputs
 
-- Declare the **name**, **category**, **parameters**, **inputs**, and **outputs** of the operator.
-- *run_step()* method to create a branch, modify files, and create a pull request.
-- *create_branch_with_backoff()* helper method to create a branch with exponential backoff in case of errors.
+- **Inputs:** 
+  - `code_content`: It is of data type `[{name,content}[]]` which contains the input code content as well as the file name.
 
-## Parameters:
+- **Parameters:**
+  - `repo_name`: The GitHub repository in the format `"user_name/repository_name"`
+  - `docs_folder_name`: The folder in the repository where the markdown files will be created or updated.
 
-1. `repo_name`: Repository name in the format `user_name/repository_name`.
-2. `docs_folder_name`: Name of the folder where the documentation files will be stored.
+- **Outputs:** The class does not return any output.
 
-## Inputs:
+## Functionality
 
-- `code_content`: An array of objects containing the name and content of the code files.
+1. **declare_name:** This static method returns the name of the class, `'GitHub Docs Writer'`.
 
-## Outputs:
+2. **declare_category:** This static method returns the operator category, which is `'ACT'`.
 
-- No Outputs.
+3. **declare_parameters:** This static method returns the metadata for the required parameters (`repo_name` and `docs_folder_name`).
 
-### Purpose of the class:
+4. **declare_inputs:** This static method returns the metadata for the required inputs (`code_content`).
 
-This class aims to:
+5. **declare_outputs:** This static method returns an empty list as there are no outputs.
 
-1. Create a new branch in a forked version of the input repository.
-2. Generate structured documentation in the form of Markdown files for inputted code files, considering comments and providing an explanation of the functionality.
-3. Add or update the documentation files in the new branch.
-4. Create a pull request to merge the changes in the new branch into the original repository.
+6. **run_step:** This method is the main function that:
+    - Connects to the GitHub API using the user's access token.
+    - Forks the specified repository.
+    - Creates a new branch in the forked repository.
+    - Loops through the given code content and creates or updates the respective markdown files in the specified docs folder.
+    - Creates a pull request with the changes for the original repository.
 
-### Helper Method's Functionality:
+7. **create_branch_with_backoff:** This static helper method tries to create a branch in the forked repo. If an exception occurs, it retries the process with an increasing delay (with a maximum of `max_retries` retries).
 
-- `create_branch_with_backoff`: This method tries to create a branch with a specified name in the forked repository. In case of errors, it retries the operation with exponential backoff and a random jitter, thus avoiding excessive retries in a short period. The parameters `max_retries` and `initial_delay` allow to fine-tune the backoff behavior if needed.
-
-**Note**: The generated output will be in unrendered markdown format, which allows it to be easily copied into a markdown generator.
+The resulting markdown files from this class can be directly used for documentation purposes, and the output in unrendered markdown format can be copied into a markdown generator for further editing and rendering.
