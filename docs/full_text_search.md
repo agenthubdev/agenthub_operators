@@ -1,29 +1,31 @@
 # FullTextSearch
 
-The `FullTextSearch` class is a subclass of `BaseOperator`, which provides an implementation for performing full-text searches on a given input text with respect to a query. This class implements methods for declaring operator metadata, parameter information, and running the actual search step.
+**FullTextSearch** is a class that inherits from `BaseOperator`. It scans input text in a sliding window fashion and returns windows that are most relevant to a given query. The results can be limited by the number of results and the window size, and an option to return results within a single line or multiline is also available. 
 
-**Parameters:**
-- **`nresults`** (integer): The maximum number of search results. Default is 5.
-- **`window_size`** (integer): The search window size in words. Default is 20.
-- **`query`** (string): The query to search for in the input text.
-- **`multiline`** (boolean): Flag indicating whether to allow windows to span multiple lines or not.
+## Class Methods
 
-**Inputs:**
-- **`text`** (string): The input text on which the full-text search will be performed.
-- **`query`** (string, optional): The input query for the search.
+### declare_* methods
 
-**Outputs:**
-- **`search_result`** (string): The generated search result.
-- **`search_results_metadata`** ({}[]): Metadata of the search results.
+These methods provide metadata about the class, including its name, description, allowed batch, category, inputs, outputs, and parameters.
 
-The class contains the following helper methods:
+### run_step
 
-- *`token_range_to_string`*: Converts a range of tokens in the given text to a string representation.
-- *`token_match_score`*: Computes the match score between two tokens.
-- *`token_is_word`*: Determines if a given token is a word or not.
+This method is the main function of the class. It performs a sliding window search using the given query, input text, and other parameters to find the most relevant windows.
 
-## Functionality
+It initializes the sliding window loop, expanding it based on the query tokens and tokens from the input text, and moves the beginning and end of the window until it reaches the end of the text. 
 
-The `run_step` method is where the actual full-text search is performed. It starts by initializing necessary variables and retrieving input values. The search is performed in a sliding window fashion and returns up to `nresults` windows that are most relevant to the given query. The sliding window size is determined by the parameter `window_size`.
+Relevance scores are calculated based on the token matches within the window, and the results are stored in a heap structure. Finally, the output is generated based on the most relevant windows found, and these results are added to the AI context.
 
-The search is performed using a multidimensional deque `qd`, where each deque stores the query tokens' matching entries in the input text `t`. The algorithm manages a window of tokens [be_i, en_i] in the input text, and calculates a total relevance score `total_s` for this window. The window is slid across the text until all windows have been examined, then relevant windows are merged if they overlap; this process is repeated up to `nresults` times to form the final search results, which are output as a string.
+## Helper Methods
+
+These are some helper methods used within the class:
+
+- `token_range_to_string`: Converts a token range to a string.
+- `token_match_score`: Compares two tokens and returns a match score.
+- `token_is_word`: Determines if the token is a valid word.
+
+## Inputs, Parameters, and Outputs
+
+- Inputs: `text` and `query` (optional)
+- Parameters: `nresults`, `window_size`, `query`, and `multiline`
+- Outputs: `search_result` and `search_results_metadata`
