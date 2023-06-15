@@ -1,23 +1,23 @@
-# IngestData
+# IngestData Class
 
-**IngestData** is a class that extends the `BaseOperator` class. Its primary purpose is to consume data, either from a provided URL or from a file, and make it available for further processing.
+The **IngestData** class is a subclass of the _BaseOperator_, designed to consume and process data from a given URL. It scrapes the textual content of the URL and returns it as a clean string. 
 
-## Class Methods
+## Key Sections
 
-- `declare_name()`: This method declares the name of the operator as "Ingest Data".
-- `declare_category()`: This method declares the category of the operator as "CONSUME_DATA".
-- `declare_parameters()`: This method declares the parameters that this operator accepts, which is an array containing a dictionary with the key "data_uri", and its corresponding data type as "string".
-- `declare_inputs()`: This method declares the inputs this operator works with, which is an array containing a dictionary with the key "input_url", and its corresponding data type as "string".
-- `declare_outputs()`: This method declares the outputs that this operator produces, which is an array containing a dictionary with the key "uri_content", and its corresponding data type as "string".
+- **declare_name**: Returns the name 'Ingest Data' for this operator.
+- **declare_category**: Returns the OperatorCategory.CONSUME_DATA enumeration value as the operator category.
+- **declare_parameters**: Defines the list of parameters for this operator. The only parameter is "data_uri", a string representing the URL to browse.
+- **declare_inputs**: Defines the list of inputs for this class. The only input is "input_url", a string representing the input URL.
+- **declare_outputs**: Defines the list of outputs for this class. The only output is "uri_content", a string representing the scraped content from the URL.
 
 ## Helper Methods
 
-- `is_url(data_uri)`: This method checks if the given `data_uri` is a valid URL or not. It does this by using a regular expression pattern. Currently, it returns `True` for all inputs as a temporary workaround.
-- `scrape_text(url)`: This method takes a URL, uses `requests` to fetch the content of the website, and then removes any unnecessary tags such as scripts and styles using `BeautifulSoup`. The method then returns the scraped text with all unnecessary tags removed.
+- `run_step(self, step, ai_context: AiContext)`: Executes the ingestion process based on the provided parameters and AI context.
 
-## Main Functionality
+- `ingest(self, params, ai_context)`: Ingests the data from the given URL and stores it in the AI context.
 
-The main functionality of this class is within the `run_step()` and `ingest()` methods.
+- `is_url(self, data_uri)`: Quick, hacky workaround to determine if the data_uri is a URL.
 
-- `run_step(step, ai_context)`: This method takes the step configuration and the AI context, and calls the `ingest()` method to process the data.
-- `ingest(params, ai_context)`: This method is responsible for ingesting the data from the given URL or file. It checks if the `data_uri` parameter is provided; if not, it fetches the input URL from the AI context. The ingested URL is then stored in the AI context's storage. It checks if the provided link is a URL using the `is_url()` helper method, and if it is, it scrapes the text using the `scrape_text()` helper method. The scraped text is then set as the output with the key name "uri_content", and a log is added with the message "Content from {data_uri} has been scraped.".
+- `scrape_text(self, url)`: Scrapes the text from the given url using BeautifulSoup and removes any script or style tags, returning the cleaned text.
+
+**Note**: The main functionality of the class revolves around the _ingest_ method, which first checks if the data URI is a URL using the is_url helper method. Then, it scrapes the content from the URL using the scrape_text helper method, and stores the results in the AI context, finally adding a log entry indicating that the content has been scraped.
