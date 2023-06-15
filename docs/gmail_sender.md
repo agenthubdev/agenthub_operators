@@ -1,38 +1,31 @@
 # GmailSender
 
-The `GmailSender` class is a part of the AgentHub framework and it mainly focuses on sending emails using a Gmail account. This class extends the `BaseOperator` class and deals with the Gmail SMTP API to provide functionality for sending emails with or without HTML content. 
+The **GmailSender** class allows users to send emails using the Gmail SMTP server. It is a subclass of `BaseOperator` and has a static method to declare its name, category, parameters, inputs, and outputs.
+
+## Inputs, Parameters and Outputs
+
+- **Inputs**:
+    - `email_body`: A string representing the content of the email.
+
+- **Parameters**:
+    - `recipient_email`: A string, the email address of the recipient.
+    - `send_as_html`: A boolean, indicating whether the email should be sent as HTML or not (default is False).
+
+- **Outputs**:
+    - `email_status`: A string, indicating whether the email was sent successfully or an error occurred.
 
 ## Functionality
 
-This class contains a set of predefined methods that help in defining various aspects of the operator, such as its parameters, inputs, and outputs. These aspects include:
+#### declare_name, declare_category, declare_parameters, declare_inputs, declare_outputs
 
-### Parameters:
+These static methods are used to declare the necessary information about the operator, such as its name, category, parameters, inputs, and outputs.
 
-- **recipient_email**: A string that represents the email address of the recipient.
-- **send_as_html**: A boolean that, when set to `True`, sends the email as HTML instead of plain text. Its default value is `False`.
+#### run_step
 
-### Inputs:
+The `run_step` method is where the main functionality of the class resides. It first retrieves the necessary parameters, inputs, and secrets from `ai_context`. Then, it calls the `send_email` helper method to send the email and stores the result in the output `email_status`.
 
-- **email_body**: A string containing the content of the email body.
+#### send_email
 
-### Outputs:
+This helper method sends an email using the given subject, body, sender, recipients, password, and an optional flag to send the email as HTML. It connects to the Gmail SMTP server, logs in with the provided email and password, sends the email, and logs out. The method returns a status message indicating if the email was sent successfully or not.
 
-- **email_status**: A string indicating the status of the email sent. It can be either "Email sent successfully" or "Email sending failed".
-
-## Main Functionality
-
-The main functionality of the `GmailSender` class lies in its `run_step` method, which takes in a step configuration, an AI context, and reads the parameter values, such as the recipient's email and whether to send the email as HTML or plain text.
-
-It then calls the `send_email` method that handles the actual email sending process. This method takes the following parameters:
-
-- **subject**: The subject of the email.
-- **body**: The content of the email body.
-- **sender**: The sender's email address.
-- **recipients**: A list containing the recipient email addresses.
-- **password**: The sender's Gmail account password.
-- **send_as_html**: A boolean indicating whether to send the email as HTML or plain text.
-- **ai_context**: The AI context object where logs can be added.
-
-The `send_email` method first creates an instance of the email message (either as an HTML or plain text message), and then establishes a connection to the Gmail SMTP server using the `smtplib.SMTP_SSL` class. It logs in to the sender's Gmail account using the provided email address and password, and then sends the email to the specified recipients. Finally, it logs out from the SMTP server and returns the status of the email sent (either successful or failed).
-
-In case of any errors, the method logs the error message in the AI context, and returns an "Email sending failed" status.
+In case of any exceptions, an error message is logged to `ai_context` and the method returns a failure status.
