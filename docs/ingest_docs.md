@@ -1,41 +1,17 @@
 # IngestDocs
+**IngestDocs** is a class that inherits from the `BaseOperator` class, and its main purpose is to scrape and ingest the content of given documentation. It performs this task by downloading the HTML pages and processing them using the **ReadTheDocsLoader** from `langchain.document_loaders`.
 
-The **IngestDocs** class is responsible for ingesting documentation content from a given URL or file. This class is a subclass of the BaseOperator class and is categorized under the CONSUME_DATA operator category.
+This class has a few important sections:
 
-## Parameters
+- **declare_name**: This is a static method that returns a string representing the operator's name, in this case - 'Ingest Documentation'.
+- **declare_category**: This static method returns the operator's category, in this case, it's BaseOperator.OperatorCategory.CONSUME_DATA.value.
+- **declare_parameters**: This static method returns a list of dictionaries containing the parameters required for this class. The only parameter needed is "docs_uri", which is a string containing the URL of the documentation.
+- **declare_inputs**: This static method returns an empty list, as there are no inputs required for this class.
+- **declare_outputs**: This static method returns a list containing a dictionary with name "docs_content" and data_type "string". This output will have the scraped document content.
+- **run_step**: This method takes in the usual `step` and `ai_context` arguments, and it calls the `ingest` method with parameters and `ai_context`.
+- **ingest**: This method takes the parameters and `ai_context` as input, checks if the given URL is valid, and asynchronously runs the `load_docs` method.
+- **is_url**: This helper method checks if the given `docs_uri` is a valid URL.
+- **download_file**: This async helper method performs the download of a file from a given URL within an aiohttp session.
+- **load_docs**: This async method scrapes and processes the documentation from the given URL, saving the data into a temporary directory and uses the `ReadTheDocsLoader` to read and concatenate the content of the ingested document pages.
 
-- `docs_uri`: A string representing the URL of the documentation to be ingested.
-
-## Inputs
-
-- None
-
-## Outputs
-
-- `docs_content`: A string containing the ingested documentation content.
-
-## Functionality
-
-The main method in the IngestDocs class is the `ingest()` method, which takes the parameters and the AI context as inputs, and ingests the documentation content using asyncio and aiohttp for asynchronous web scraping.
-
-### Helper Methods
-
-- `is_url(docs_uri)`: This method checks if the provided `docs_uri` is a valid URL.
-- `download_file(session, url, output_directory)`: This method takes a session, URL, and an output_directory, and downloads the file from the URL into the output_directory.
-- `load_docs(url)`: This method takes a URL, scrapes, and downloads the relevant documentation files using the helper methods `download_file()` and `is_url()`. It then loads the ingested content using the ReadTheDocsLoader.
-
-## Example Usage
-
-1. Create an instance of the IngestDocs class.
-2. Call the `ingest()` method with the appropriate parameters and AI context.
-3. Access the ingested documentation content from the AI context through the `docs_content` output.
-
-```markdown
-IngestDocs_obj = IngestDocs()
-params = {'docs_uri': 'https://python.langchain.com/en/latest/'}
-ai_context = AiContext()
-IngestDocs_obj.ingest(params, ai_context)
-docs_content = ai_context.get_output('docs_content', IngestDocs_obj)
-```
-
-The `docs_content` variable will now contain the ingested documentation content as a string. This can then be utilized as needed, such as copying into a markdown generator for further processing or as documentation content in a project README file.
+The class requires a **docs_uri** as a parameter and takes an empty list of inputs. It provides an output **docs_content** as a string containing the scraped content of the documentation. The main purpose of the class is to download and process the given documentation, and its helper methods handle URL validation, file downloads and loading the content of the documentation.
