@@ -1,28 +1,18 @@
-## CombineStrings
+# CombineStrings
 
-CombineStrings is a class that inherits from the `BaseOperator` class. It provides functionality to combine two input strings according to a given format. The format will include placeholders for the inputs, `{input1}` and `{input2}`. The class makes use of utility methods from the `AiContext` class.
+**CombineStrings** is a class that inherits from the `BaseOperator`. Its main purpose is to concatenate two input strings according to a given format.
 
-### Main Method
+## Class Methods
 
-1. **Run_step(self, step, ai_context: AiContext)**: Takes the step and AI context as input, fetches the strings from AI context, combines them according to the format provided in the step parameters, and sets the output to a combined string. If any exceptions occur, log the error message.
+- `declare_name()`: Returns the name of the operator, `'CombineStrings'`.
+- `declare_category()`: Returns the category of the operator, which is _MANIPULATE_DATA_.
+- `declare_parameters()`: Declares the parameters required for this operator. This operator accepts a single format parameter (a string) as input.
+- `declare_allow_batch()`: Indicates whether this operator can handle batch processing. In this case, it returns `True`.
+- `declare_inputs()`: Declares the inputs required for this operator. It accepts two strings, 'input1' and 'input2', which are both optional.
+- `declare_outputs()`: Declares the output expected from this operator, which is a single 'combined_string' of data type string.
 
-### Helper Methods
+## Main Functionality
 
-1. **Declare_name()**: Returns the name 'CombineStrings'.
-2. **Declare_category()**: Returns the category of the operator, which is in this case 'MANIPULATE_DATA'.
-3. **Declare_parameters()**: Returns a list of the required parameters, which should include a single JSON object with name 'format' and data type 'string'.
-4. **Declare_allow_batch()**: Indicates that this operator supports batch processing.
-5. **Declare_inputs()**: Returns a list of required inputs, which are:
-    - input1: a string, with the placeholder: "Enter the first input string".
-    - input2: a string, with the placeholder: "Enter the second input string".
-6. **Declare_outputs()**: Returns a list of expected outputs, which is a JSON object having key "combined_string" with data type 'string'.
+The `run_step()` method takes in a step and an AI context. It fetches the values of 'input1' and 'input2' from the AI context, and if not provided, defaults them to empty strings. It then fetches the format string from the step's parameters.
 
-### Parameters
-- **format**: A string with placeholders `{input1}` and `{input2}` indicating where the input strings should be placed in the final combined string.
-
-### Inputs
-- **input1**: The first input string.
-- **input2**: The second input string.
-
-### Outputs
-- **combined_string**: The final combined result in which input strings are placed according to the provided format.
+The method tries to substitute the input1 and input2 values into the format string by utilizing the `str.format()` method. If successful, it adds a log message and sets the combined_string as the output in the AI context. If it encounters any error during the process, a log message with the error information is added.
