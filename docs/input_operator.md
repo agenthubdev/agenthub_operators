@@ -1,30 +1,30 @@
 # InputOperator
 
-The **InputOperator** class is a part of a larger system and inherits from the **BaseOperator** class. Its primary role is to handle a single input value and immediately output it without any modification. 
+The **InputOperator** is a special type of operator that serves two main purposes:
 
-## Class Methods
+1. *Create a named input* for a pipeline
+2. *Store the history of interactions* with the pipeline when it implements the action of an Agent
 
-- `declare_name()` : This method returns a string 'Input', representing the name of the operator.
+This operator is particularly useful when building interactive agents and for testing purposes. It allows you to manually specify the 'value' parameter for an Input operator.
 
-- `declare_category()` : Here, the _OperatorCategory_ is declared as **MISC**. This means that the operator falls under the miscellaneous category.
+Some key sections of the code include:
 
-- `declare_parameters()` : The following parameters are declared for this class:
+- The **declare_name()** method, which returns the name of this operator: `'Input'`
+- The **declare_description()** method, which provides a brief description of the operator's functionality
+- The **declare_category()** method, which returns the category of the operator: `BaseOperator.OperatorCategory.MISC.value`
+- The **declare_parameters()**, **declare_inputs()**, and **declare_outputs()** methods, which define the required parameters, inputs, and outputs for the operator
+- The **run_step()** method, which executes the operator's main functionality
 
-    - name: "value"
-    - data_type: "string"
-    - placeholder: "Anything you would like this operator instance to output"
+The **InputOperator** has the following *parameters*:
 
-  These parameters are used to store the input value that will be directly passed on as the output.
+- `value` (string): The string value you would like this operator instance to output
+- `input_name` (string): Named input for the pipeline, can be used to invoke the pipeline with specified input values
+- `store_log` (boolean): Whether you want to keep track of all the inputs that this pipeline was run with
+- `log_visibility` (enum[user,team]): When storing the history of inputs for this saved pipeline, what level of granularity should the log be stored at (only available if `store_log` is true)
+- `team_name` (string): Team name to store the logs for (only available if `log_visibility` is set to 'team')
 
-- `declare_inputs()` : This method returns an empty list, as there are no inputs required for this operator, aside from the value declared in the parameters.
+The **InputOperator** has *no inputs* and one *output*:
 
-- `declare_outputs()` : The output declaration for this operator is as follows:
+- `output` (string): The outputted string value specified in the 'value' parameter
 
-    - name: "output"
-    - data_type: "string"
-
-  This output holds the unmodified input value that has been directly passed from the parameters.
-
-- `run_step(step, ai_context)` : This is the main method of the **InputOperator** class. It receives a step with its parameters and an AI context. The method sets the output value equal to the 'value' parameter fetched from the given step.
-
-In summary, the **InputOperator** serves as a simple input-output operator within a larger system. It takes a single string value as its parameter and immediately provides it as output without any modification or further processing.
+To use the InputOperator, simply create an instance of the operator and execute the `run_step()` method with the appropriate step and ai_context.
