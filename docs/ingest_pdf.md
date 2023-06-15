@@ -1,31 +1,26 @@
 # IngestPDF
 
-The **IngestPDF** class is an extension of the `BaseOperator` and focuses on ingesting PDF files either through a direct upload, a URL or from your local storage. It extracts the content from the PDF and provides output as plain text.
+**IngestPDF** is a class that extends **BaseOperator**. The main goal of this class is to ingest PDF files and extract their content, which can be done through three different sources:
+1. An uploaded file through the `uploaded_file_name` parameter.
+2. A file previously generated in the current run, passed as input with the name `file_name`.
+3. A PDF file from a specified URL using the `pdf_uri` parameter.
 
-## Key Methods
-
-- `declare_name()`: declares the name of the operator as 'Ingest PDF'
-- `declare_category()`: sets the operator's category to 'CONSUME_DATA.value'
-- `declare_allow_batch()`: returns `True` if batch processing is allowed
-- `declare_parameters()`: defines and returns the required parameters such as 'pdf_uri', 'uploaded_file_name'
-- `declare_inputs()`: defines the optional inputs such as 'file_name'
-- `declare_outputs()`: defines the output key 'pdf_content' which is the extracted text from the PDF
-- `run_step(step, ai_context)`: main function that extracts the content from the given PDF file
-- `ingest(pdf_uri, file_name, uploaded_file_name, ai_context)`: ingests a PDF file from either direct upload, URL or from the local storage
-- `is_url(pdf_uri)`: checks if the provided `pdf_uri` parameter is a valid URL
-- `load_pdf_from_uri(url)`: loads the content of the PDF from a URL
-- `load_pdf_from_storage(file_name, generated_this_run, ai_context)`: loads the content of the PDF from your local storage (either generated this run or not)
-- `read_pdf(pdf)`: reads the content of the PDF and returns it as plain text
-
-## Parameters
-
-- `pdf_uri`: string, URL of the PDF file (optional)
-- `uploaded_file_name`: string, the name of the PDF file previously uploaded to the workspace (optional)
+When executing the `run_step()` method, it tries to ingest the PDF file from the mentioned sources in the specific order and extracts the content of the PDF file. 
 
 ## Inputs
+- `file_name` (optional, string): Represents the name of the PDF file that was previously generated during the current run.
 
-- `file_name`: string, the name of the PDF file provided as input (optional)
+## Parameters
+- `pdf_uri` (string): Represents the URL of the PDF file to be ingested.
+- `uploaded_file_name` (string): Represents the name of the previously uploaded PDF file.
 
 ## Outputs
+- `pdf_content` (string): Contains the extracted content of the PDF file.
 
-- `pdf_content`: string, the extracted text from the PDF
+## Helper Methods
+
+- `ingest(self, pdf_uri, file_name, uploaded_file_name, ai_context)`: Takes the PDF file information and extracts its content.
+- `is_url(self, pdf_uri)`: Checks if the provided `pdf_uri` is a valid URL.
+- `load_pdf_from_uri(self, url)`: Downloads a PDF file from the given URL.
+- `load_pdf_from_storage(self, file_name, generated_this_run, ai_context)`: Loads a PDF file from storage, either from a previous run or the current run.
+- `read_pdf(self, pdf)`: Reads the content of a PDF file using Tabula, which extracts tables and formulates them into a readable string format. The text is then returned as a single string.
