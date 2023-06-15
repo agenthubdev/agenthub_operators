@@ -1,42 +1,17 @@
-# VectorizeOperator
+## VectorizeOperator
 
-**VectorizeOperator** is a class that inherits from **BaseOperator**. Its main functionality is to create a list containing repeated 'element' values of a given length. This length is determined by the provided 'vector'. This operation can be useful when you need to fill a list with a specific value according to a certain size.
+The **VectorizeOperator** class is a subclass of `BaseOperator`, which aims to *manipulate data* by creating a list of a specified element repeated for a certain number of times.
 
-## Class Methods
+### Key Methods
 
-### declare_name
+- `declare_name()`: Returns the name, **Vectorize**.
+- `declare_category()`: Returns the category from `BaseOperator.OperatorCategory`. In this case, it is `MANIPULATE_DATA`.
+- `declare_description()`: Provides a description of the functionality: **Creates a list out of 'element' of size len('vector') like so: [element] * len(vector).**
+- `declare_parameters()`: Lists the parameters for this operator. No parameters are needed in this case.
+- `declare_inputs()`: Lists the input data required. In this case, it requires *"element"* (any data type) and *"vector"* (any data type).
+- `declare_outputs()`: Lists the output data produced. In this case, it produces *"vector_of_elements"* (any data type).
+- `run_step()`: The main function that takes in the input data `element` and `vector`, creates a list with repeated *element* of length *vector*, and sets the output data as *"vector_of_elements"*.
 
-Returns the operator's name: `'Vectorize'`.
+### Usage
 
-### declare_category
-
-Returns the operator's category: `BaseOperator.OperatorCategory.MANIPULATE_DATA.value`.
-
-### declare_description
-
-Provides a description of the functionality: 
-
-```
-"Creates a list out of 'element' of size len('vector') like so: [element] * len(vector)"
-```
-
-### declare_parameters
-
-There are *no* parameters declared for this operator.
-
-### declare_inputs
-
-The operator requires two inputs:
-
-1. `element`: This input can be of any data type and will be the value repeated in the resulting list.
-2. `vector`: This input can also be of any data type, and its length determines the size of the resulting list.
-
-### declare_outputs
-
-The operator provides one output:
-
-1. `vector_of_elements`: This output will be a list of the same length as 'vector', comprised of the repeated 'element' values.
-
-## run_step
-
-This method is responsible for the main functionality of the class. It creates the list containing the repeated 'element' values, based on the length of the 'vector' input. The result is then set as the output 'vector_of_elements'.
+To use **VectorizeOperator**, provide an element and a vector. The function will create a list containing the given element repeated for a length equal to the length of the input vector. The output will be in the form of a list of the repeated element, under the name *"vector_of_elements"*.
