@@ -1,44 +1,29 @@
 # ChatBot
 
-**ChatBot** is a class that inherits from `BaseOperator`. This class is used to connect with a chatbot model, receive a user query, and provide an appropriate response based on the conversation history and a vector index.
+**ChatBot** is a class that extends *BaseOperator* and provides an implementation to answer questions using a given *vector_index_id* and conversation history. It incorporates results of hybrid search and chat history into the AI-generated response.
 
-## Class Methods
+### Inputs
+- None
 
-Here are the main methods of the **ChatBot** class:
+### Parameters
+- **vector_index_id**: A string indicating the Vector Index Id.
+- **query**: A string representing the question to ask the ChatBot.
 
-- `declare_name()`: Returns the name of the operator as 'Ask Chat Bot'.
-- `declare_category()`: Returns the operator category as AI.
-- `declare_description()`: Provides a brief description of the class functionality.
-- `declare_parameters()`: Specifies the required parameters for the class which include `vector_index_id` and `query`.
-- `declare_inputs()`: This operator does not accept any inputs.
-- `declare_outputs()`: Defines the output as `response` with a data type of string.
-- `run_step()`: Executes the main functionality of the ChatBot, which includes:
-  - Retrieving the query parameter and model name.
-  - Embedding the text of the query.
-  - Getting the vector index based on the passed ID.
-  - Limiting the tokens for the model to prevent exceeding the token limit.
-  - Incorporating hybrid search results into the prompt.
-  - Loading chat history up to the token budget allowed.
-  - Running the chat completion based on the conversation history and user query.
-  - Storing the chatbot response as an output and adding it to the conversation log.
+### Outputs
+- **response**: A string containing the AI-generated response.
 
-## Parameters
+The `run_step()` method is the core functionality of the ChatBot class. In this method, the following steps are performed:
 
-- `vector_index_id`: A unique string identifier for the persisted vector index, usually printed by Persist Vector Index.
-- `query`: A string containing the user's question for the chatbot.
+1. Retrieve the query and vector index from the given parameters.
+2. Calculate token limits based on the model name.
+3. Retrieve the most relevant chunks from the vector index and incorporate them into the prompt.
+4. Load chat history and append the prompt containing the generated context.
+5. Run the AI chat completion to generate a response.
+6. Store the user's query and AI response in the chat history memory.
 
-## Inputs
+The purpose of the helper methods is as follows:
 
-This class does not require any inputs.
-
-## Outputs
-
-- `response`: A string containing the chatbot's response to the user query.
-
-## Functionality
-
-The main purpose of the **ChatBot** class is to interact with a chat model, process user queries, and provide suitable responses based on the conversation context. The class uses helper methods to include context from a hybrid search (using a vector index), manage token limits, and load conversation history into the chat model.
-
-When run, the `run_step()` method takes the input parameters, processes the query, and generates a chatbot response. The response is then stored as an output and added to the conversation log.
-
-In summary, the **ChatBot** class combines conversation history with a relevant embedded context to provide an appropriate response based on the user query.
+- `sort_chunks_by_similarity()`: Sorts chunks based on their similarity to the query embedding.
+- `select_most_relevant_chunks()`: Selects the most relevant chunks within the given token budget.
+- `get_max_tokens_for_model()`: Returns the maximum tokens allowed for the given model name.
+- `count_tokens()`: Counts the number of tokens in the text based on the model name.
