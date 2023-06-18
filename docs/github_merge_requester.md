@@ -1,29 +1,31 @@
-# GitHubMergeRequester
+# **GitHubMergeRequester**
 
-**GitHubMergeRequester** is a class that inherits from the *BaseOperator* and is designed to create a GitHub merge request for a specified repository and branch. It takes a list of differences (file names and their content) as input and applies these changes to a new branch created in a forked version of the repository. Finally, it creates a pull request to merge the new branch in the forked repository into the original branch.
+This class is a subclass of **BaseOperator** and is used to create merge requests on GitHub. 
 
 ## Inputs
-
-- **list_of_diffs**: {name, content}[] – the input data containing a list of dictionaries with 'name' (file name) and 'content' (file content).
+- **list_of_diffs**: A list of dictionaries, where each dictionary contains the name and content of a file to be changed in the merge request.
 
 ## Parameters
-
-- **repo_name**: string – the repository name in the format "user_name/repository_name".
-- **branch**: string – the branch name that the merge request will be based on (default is "main").
+- **repo_name**: A string that represents the name of the repository in the format 'user_name/repository_name'.
+- **branch**: A string that represents the base branch to merge the changes into. If not specified, the default is 'main'.
 
 ## Outputs
+The class does not have any outputs.
 
-- The class does not have any declared outputs. However, it returns a log message with the URL of the created pull request.
+## Helper Method
+- **create_branch_with_backoff**: This helper method creates a new branch in the forked repository by backing off and retrying the API call if it fails. 
 
-## Main Functionality
+## Functionality 
+When run, the class:
+1. Requests access to the GitHub API using the access token stored in ai_context.
+2. Gets the repository specified in the parameters. 
+3. Creates a fork of the repository.
+4. Creates a new branch in the forked repository based on the provided base branch.
+5. Makes the changes specified in the **list_of_diffs** input by updating the files in the new branch of the forked repository.
+6. Creates a pull request to merge the changes in the forked repository back into the original repository.
 
-- **run_step**: The main function responsible for creating a GitHub merge request for a specified repository and branch.
-    1. Fetches the repository, forks it, and creates a new branch.
-    2. Updates the files in the new branch with the new content from the input 'list_of_diffs'.
-    3. Creates a pull request to merge the new branch into the original branch.
+`create_branch_with_backoff` helper method is used here to poll the GitHub API periodically to check if the fork is ready, and if not, backup and retry the API call again until the fork is ready.
 
-## Helper Function
+The details of each change made in the merge request are logged in ai_context.
 
-- **create_branch_with_backoff**: A static method that helps in creating a branch on a forked repository. If the branch creation fails, it retries with an exponential backoff algorithm up to a maximum number of retries.
-
-That's a brief overview of the **GitHubMergeRequester** class and its functionalities.
+Overall, this class makes it easy to create merge requests programmatically.
