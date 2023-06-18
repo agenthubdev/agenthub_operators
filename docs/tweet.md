@@ -1,33 +1,25 @@
-# Tweet Class
+# Summary
 
-The **Tweet** class is a custom operator for managing tweets. It is responsible for sending a tweet containing the given text and a URL. The class uses the Tweepy library to interact with the Twitter API.
+The `Tweet` operator is a class that allows the user to send a tweet with a given text and URL, handling Twitter authentication, and URL formatting.
 
-## Parameters
+# Inputs
 
-There are no parameters for the **Tweet** class.
+- **tweet_text**: A string input representing the text to be tweeted. The API will attempt to send this text along with the URL as a tweet.
 
-## Inputs
+# Parameters
 
-- **tweet_text** (string): Input text to be tweeted. Placeholder: "Enter the text to tweet".
+This operator does not have any declared parameters.
 
-## Outputs
+# Outputs
 
-- **tweet_status** (string): Output string containing the status of the tweet, whether it was successful or there was an error.
+- **tweet_status**: A string output that indicates whether the tweet has been sent successfully or has encountered an error.
 
-## Method Overview
+# Functionality
 
-### set_twitter_keys_and_secrets
+- **run_step**: The main function of the operator that fetches the inputs and calls the `send_tweet` function to send the tweet. It also sets the output `tweet_status` and adds the tweeted URL to the `tweeted_links` list in the memory.
 
-This helper method sets the required API keys and secrets for connecting to the Twitter API using Tweepy. The keys and secrets are stored in the AI Context.
+- **set_twitter_keys_and_secrets**: This function fetches the necessary secret values (i.e Twitter API keys) from `ai_context` and sets them as instance variables in the operator.
 
-### run_step
+- **trim_trailing_hashtags**: A helper function that trims extra hashtags from the tweet_text to make sure that the tweet with the URL fits within Twitter's character limit (280 characters).
 
-This is the main method that runs the current step of the operator. It gets the input tweet_text and the ingested URL from the AI Context. It then sets the API keys and secrets using `set_twitter_keys_and_secrets`. After that, it calls the `send_tweet` method to send the tweet containing the text and the URL. The method also stores the tweeted URL in the memory.
-
-### trim_trailing_hashtags
-
-This helper method trims the trailing hashtags from the input text, if the combined length of the text and URL exceeds the maximum limit of 280 characters for a tweet.
-
-### send_tweet
-
-The method creates a Tweepy client with the API keys and secrets. It calls the `trim_trailing_hashtags` method to ensure the text's length is within the limit. Then, it formats the tweet by concatenating the text and URL. After validating the final text, it sends the tweet using `create_tweet` from the Tweepy library. It then returns the output status, either a success message (with the tweet URL) or an error message.
+- **send_tweet**: This function consumes `tweet_text`, `url`, and `ai_context` to create a formatted tweet by concatenating the tweet_text and URL with a newline in between. If the formatted tweet is longer than Twitter's character limit, the `trim_trailing_hashtags` function will be called. Finally, the tweet will be sent using the Tweepy library, and the function will return the output status with a link to the tweet if the operation is successful, or an error message if there is an issue with sending the tweet.
