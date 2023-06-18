@@ -1,35 +1,42 @@
-# BaseOperator
+# BaseOperator Documentation
 
-The **BaseOperator** class serves as a base or foundation for creating custom operator classes that can be used in processing pipelines. The main purpose of this class is to provide a consistent structure and set of methods for operators to inherit and customize based on their specific functionality.
+## Summary
 
-This base class includes:
+BaseOperator is a base class for constructing pipeline operators, providing a generic structure and methods for managing inputs, outputs, parameters, and AI model preferences.
 
-- A unique identifier (ID) for each operator instance, using the **shortuuid** library
-- An **Enum** for categorizing operators into different categories
-- A set of static methods for declaring operator properties, such as name, parameters, inputs, outputs, secrets, description, and category
-- A `run_step` method, which serves as a placeholder for derived operator classes to implement their processing logic
+## Inputs
 
-## Important Sections
+Inputs are the data that an operator processes, such as a list of web links or a blob of text. The `declare_inputs()` method is used to define these inputs.
 
-- **OperatorCategory Enum**: Provides categories that operators can be classified into. They include:
-  - CONSUME_DATA: Data Intake
-  - MANIPULATE_DATA: Data Manipulation
-  - AI: Using Large Language Models
-  - ACT: Interact with the World
-  - MISC: The rest
-- **declare_allow_batch**: Determines whether the AgentHub platform is allowed to execute the operator multiple times in a loop on vector inputs.
-- **declare_name**: Returns the operator's user-visible name for use in the frontend.
-- **declare_parameters**: Lists the operator's parameters, which users need to set manually when building a pipeline.
-- **declare_inputs**: Specifies the input state that an operator processes, such as a list of web links or a blob of text.
-- **declare_outputs**: Specifies the outputs that the operator produces, which can serve as inputs to other operators in a pipeline.
-- **declare_secrets**: Lists the names of secrets that an operator may use.
-- **declare_description**: Returns a plain English description of what the operator does (optional).
-- **declare_category**: Specifies the category for the operator.
+## Parameters
 
-## Inputs, Parameters, and Outputs
+Parameters are the user-defined settings for building a pipeline. They should not be confused with inputs. The `declare_parameters()` method is used to define them. Additionally, the `declare_additional_parameters()` method can be used to declare extra configurations for individual operator instances.
 
-- **Inputs**: The input state that an operator processes. These inputs cannot be set manually on the UI by users (currently), but can be taken from the outputs of previous operators in a pipeline.
-- **Parameters**: Values that users need to set manually when building a pipeline, allowing for customization and configuration of the operator's behavior.
-- **Outputs**: Specifies the output produced by the operator, which can serve as inputs for other operators in a pipeline.
+## Outputs
 
-By providing these methods and structure, the **BaseOperator** class makes it easier for developers to create and maintain a consistent set of operators for use in processing pipelines on the AgentHub platform.
+Outputs are the processed data or results produced by an operator. These outputs can serve as inputs for another operator. The `declare_outputs()` method is used to define these outputs.
+
+## Functionality
+
+### run_step
+
+The `run_step()` method executes the operator's core functionality using the given AI context. This method should be implemented by the derived operator classes.
+
+### Helper Functions
+
+- `declare_allow_batch()`: Used to determine if the AgentHub platform can execute the operator multiple times in a loop on a vector of inputs.
+- `declare_name()`: Provides a user-visible operator name for frontend display.
+- `declare_secrets()`: Lists the names of secrets that the operator would use.
+- `declare_description()`: Provides a plain English explanation of the operator.
+- `declare_category()`: Specifies the category that the operator falls into, which helps guide the operator selection in the UI.
+
+## OperatorCategory Enumeration
+
+The `BaseOperator.OperatorCategory` enumeration class helps classify the different categories of operators. These categories include:
+
+1. CONSUME_DATA (Data Intake)
+2. MANIPULATE_DATA (Data Manipulation)
+3. DB (Database I/O)
+4. AI (Using LLMs)
+5. ACT (Interact with the World)
+6. MISC (The rest)
