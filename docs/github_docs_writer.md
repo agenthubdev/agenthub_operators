@@ -1,37 +1,30 @@
 # GitHubDocsWriter
 
-The `GitHubDocsWriter` class is a custom operator that focuses on providing **structured documentation** for the code in markdown format. It takes into consideration the comments within the code and offers a summary of the functionality. By digesting the code into an accessible format, the class contributes to an easily comprehended understanding of the code's purpose and operation.
+The `GitHubDocsWriter` is a class that allows the user to update documentation files on a GitHub repository. It extends the `BaseOperator` class and implements the `run_step()` method.
 
-## Key functionalities:
+## Inputs
+The `run_step()` method requires one input, `code_content`, which is a list of dictionaries containing the name and content of code files.
 
-- Declare the **name**, **category**, **parameters**, **inputs**, and **outputs** of the operator.
-- *run_step()* method to create a branch, modify files, and create a pull request.
-- *create_branch_with_backoff()* helper method to create a branch with exponential backoff in case of errors.
+## Parameters
+The `GitHubDocsWriter` class has two required parameters:
 
-## Parameters:
+* `repo_name`: the name of the GitHub repository in the format `user_name/repository_name`.
+* `docs_folder_name`: the name of the folder in the repository where the documentation files will be stored.
 
-1. `repo_name`: Repository name in the format `user_name/repository_name`.
-2. `docs_folder_name`: Name of the folder where the documentation files will be stored.
+## Outputs
+The `run_step()` method does not return any output.
 
-## Inputs:
+## Methodology
 
-- `code_content`: An array of objects containing the name and content of the code files.
+The `run_step()` method follows these steps:
 
-## Outputs:
+1. Get the values from the input and parameters.
+2. Create a fork of the original repository using the GitHub API.
+3. Get the base branch of the original repository and the list of all the files in the repository.
+4. Create a new branch with a name related to the current run_id.
+5. Create and update the documentation files in the forked repository.
+6. Create a pull request to merge the changes into the base branch.
 
-- No Outputs.
+The `create_branch_with_backoff()` method is a helper method used to create a new branch in the forked repository. It retries the creation of the branch up to three times with an exponential backoff strategy in case of failure.
 
-### Purpose of the class:
-
-This class aims to:
-
-1. Create a new branch in a forked version of the input repository.
-2. Generate structured documentation in the form of Markdown files for inputted code files, considering comments and providing an explanation of the functionality.
-3. Add or update the documentation files in the new branch.
-4. Create a pull request to merge the changes in the new branch into the original repository.
-
-### Helper Method's Functionality:
-
-- `create_branch_with_backoff`: This method tries to create a branch with a specified name in the forked repository. In case of errors, it retries the operation with exponential backoff and a random jitter, thus avoiding excessive retries in a short period. The parameters `max_retries` and `initial_delay` allow to fine-tune the backoff behavior if needed.
-
-**Note**: The generated output will be in unrendered markdown format, which allows it to be easily copied into a markdown generator.
+Overall, the `GitHubDocsWriter` class is an efficient way to update and manage documentation files in a GitHub repository with the use of Python.
