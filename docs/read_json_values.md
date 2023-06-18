@@ -1,30 +1,16 @@
-# ReadJsonValues
+# ReadJsonValues Operator Documentation
 
-**ReadJsonValues** is a class that extends `BaseOperator` and is used to read the values of specified keys from a given JSON string and return them as a comma-separated string. The class has a helper method `get_nested_values` that recursively traverses the JSON object to extract the values of the specified keys.
+## Summary
+The ReadJsonValues operator is designed to extract specific values from a given JSON string, providing a mechanism to access and manipulate nested or sequential JSON data.
 
-### Inputs
+## Inputs
+- `json_string`: A string representation of the JSON object. This is the JSON data from which specific values will be extracted.
 
-- `json_string`: A string containing the JSON object that needs to be processed.
-    - data_type: "string"
-    - placeholder: "Enter the JSON string"
+## Parameters
+- `keys`: A comma-separated string representing the keys to be extracted from the JSON object. Nested keys should be separated by a period (e.g., `"key1,key2,key3"` for non-nested keys, and `"key1.subkey1,key2.subkey2"` for nested keys).
 
-### Parameters
+## Outputs
+- `json_values`: A concatenated string displaying the extracted key-value pairs from the JSON object in the format: `key: value`.
 
-- `keys`: A comma-separated string of keys whose values need to be extracted from the JSON string.
-    - data_type: "string"
-    - placeholder: "Ex: 'key1,key2,key3'"
-
-### Outputs
-
-- `json_values`: A comma-separated string containing values of the specified keys stored in the input JSON string.
-    - data_type: "string"
-
-### Helper Method: get_nested_values
-
-This method takes a JSON object and a list of keys and returns a list of extracted values in the format `key: value`. This method is used to recursively traverse the JSON object and extract nested values if required.
-
-- **Arguments**:
-    - `json_object`: The JSON object that needs to be traversed.
-    - `keys`: A list of keys whose values need to be extracted from the input JSON object.
-
-- **Returns**: A list of extracted values in the format `key: value`.
+## Functionality
+The main function within this operator is `run_step`, which is responsible for receiving the JSON string and extracting the specified key values. It uses a helper function called `get_nested_values` to perform the actual extraction and concatenation of keys to their corresponding values. If an error occurs during the processing, a failure message is logged, and the operator terminates unsuccessfully. If the key values are extracted successfully, the concatenated string is returned, and the operator finishes its execution successfully.
