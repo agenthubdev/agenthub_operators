@@ -1,28 +1,11 @@
-## **GitHubFileReader**
+# **GitHubFileReader**
 
-The `GitHubFileReader` class is a custom operator class that inherits from the `BaseOperator` class. It allows the user to fetch files from a GitHub repository and store them as a list of dictionaries containing file names and contents. The class focuses on the functionality of fetching files from a specific GitHub repository using a provided access token, branch, regex filter, and list of folder paths.
+This class is designed to fetch files from a GitHub repository. It takes four parameters: repository name, folders to fetch files from, file regex to filter the files and the branch to select.
 
-**Parameters:**
+The function `run_step` reads in the user-defined parameters and calls the `read_github_files` function. Inside the `read_github_files` function, the `Github` module authenticates the user using an access token and fetches the required repository. Then the function `bfs_fetch_files` performs a breadth-first search through the folders provided, fetching all files and directories. The files are then filtered based on the provided regex and the decoded content is stored in a list of dictionary objects with keys `name` and `content`.
 
-- `repo_name` (string) : The name of the GitHub repository in the format of "user_name/repository_name".
-- `folders` (string) : A list of folder paths separated by commas.
-- `file_regex` (string) : A regex pattern to filter file names (e.g., '.*\.py').
-- `branch` (string) : The branch of the repository being fetched (default is 'main').
+The function `file_matches_regex` matches the file path against the file regex. If no regex is provided, it returns true. The function `bfs_fetch_files` fetches the files from the repository using a breadth-first search. It fetches all files and directories in the given path, and if a file matches the regex, it is added to the list `files`. If a directory is found, it is added to the queue to process its contents.
 
-**Outputs:**
+The inputs for this class include none, as it is designed to fetch data from the external repository. The parameters are `repo_name`, `folders`, `file_regex`, and `branch` which allow the user to fetch files from the specified repository. The `files` are the only output, which is a list of dictionaries containing the name and content of each file.
 
-- `files` (list of dictionaries) : A list containing dictionaries of fetched files in which each dictionary has the keys 'name' and 'content' set.
-
-**Methods:**
-
-- `declare_name` : Returns the name of the operator, which is 'Get files from GitHub'.
-- `declare_category` : Returns the operator category, which is 'CONSUME_DATA'.
-- `declare_parameters` : Returns a list of dictionary objects, each containing parameter-related information such as the name, data type, and placeholder.
-- `declare_inputs` : Returns an empty list as there are no inputs.
-- `declare_outputs` : Returns a list of dictionary objects containing output-related information such as the name and data type.
-- `run_step` : Executes the process of fetching files from the specified GitHub repository using the provided parameters.
-- `read_github_files` : A helper method that reads files from the GitHub repository using the GitHub API. It leverages a breadth-first search approach to fetch files recursively from parent folders. The fetched files are filtered based on the given regex pattern, and the list of dictionaries containing file names and contents is returned.
-
-The main functionality of the `GitHubFileReader` class is to fetch files from GitHub repositories using the provided access token, branch, regex filter, and folder paths. It connects to the GitHub API and processes the parameters of the step passed to the `run_step` method. Then, it moves on to the `read_github_files` helper function to read file contents and names from specified folders.
-
-After fetching the files from the GitHub repository, the class logs this information, including the number of fetched files and the list of file paths. Finally, the `files` output is set by the `ai_context.set_output()` method.
+In summary, this class fetches multiple files with the specified regex from a specified repository on GitHub and outputs those files as a list of dictionary objects.
