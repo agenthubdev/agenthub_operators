@@ -1,181 +1,219 @@
-# Documentation
+# List of Classes in the Codebase
 
-## **AskChatGpt**
-The `AskChatGpt` class is used to manage the interaction with OpenAI's GPT-3 model for multi-turn chat-based conversations. It allows you to make requests to the GPT-3 API and generate responses based on a list of messages.
+The codebase includes various classes and helper methods for performing a wide range of tasks. Here is a brief summary of each class:
 
-**Inputs:** Message list
+## AskChatGpt
 
-**Parameters:** Model name, OpenAI API key, and prompt settings (such as "max tokens" and "temperature")
+This class uses OpenAI's GPT to generate responses for a chatbot. It takes in the user's message as input and returns a response.
 
-**Outputs:** Generated response
+**Inputs:** User input message
 
-## **WebSearch**
-The `WebSearch` class helps in performing web searches using various search engines. It abstracts the interaction with search engine APIs, making it easier to perform web searches and get search results.
+**Outputs:** Chatbot response
 
-**Inputs:** Search query, search engine, and other optional search parameters
+## WebSearch
 
-**Parameters:** Search engine API key, and selected search engine (Google, Bing, etc.)
+This class enables the user to search the internet for relevant information. It takes in a search query as input and returns a list of relevant URLs.
 
-**Outputs:** List of search results
+**Inputs:** Search query
 
-## **GitHubFileReader**
-The `GitHubFileReader` class enables you to read files from a specified GitHub repository. It handles the underlying API calls to fetch the file content and returns the file data.
+**Outputs:** List of relevant URLs
 
-**Inputs:** Repository URL, file path, and branch name (optional)
+## GitHubFileReader
 
-**Parameters:** GitHub API token
+This class enables the user to read files directly from GitHub repositories. It takes in a GitHub URL as input and returns the contents of the file.
 
-**Outputs:** Content of the specified file
+**Inputs:** GitHub repository URL
 
-## **GitHubMergeRequester**
-The `GitHubMergeRequester` class helps you to create merge requests on GitHub. You can use this class to create a pull request, specifying the source and target branches as well as the description.
+**Outputs:** Contents of the specified file from the repository
 
-**Inputs:** Repository URL, source branch, target branch, title, and description of the merge request
+## GitHubMergeRequester
 
-**Parameters:** GitHub API token
+This class enables the user to submit merge requests to GitHub repositories. It takes in the repository information and the merge request content as input.
 
-**Outputs:** Result of the merge request creation
+**Inputs:** Repository information, Merge request content
 
-## **GitHubDocsWriter**
-The `GitHubDocsWriter` class is used to update documentation files within a GitHub repository. It allows you to read, update, and commit changes to the specified files in the repository.
+**Outputs:** None
 
-**Inputs:** Repository URL, file path, new content, commit message, and branch name (optional)
+## GitHubDocsWriter
 
-**Parameters:** GitHub API token
+This class enables the user to write documentation to a GitHub repository. It takes in the repository information and the documentation content as input.
 
-**Outputs:** Result of the file update and commit operation
+**Inputs:** Repository information, Documentation content
 
-## **ListProcessor**
-The `ListProcessor` class provides a set of helper methods for processing and manipulating lists. It contains useful functions for filtering, sorting, and transforming list data.
+**Outputs:** None
 
-**Inputs:** Input list, processing function, and optional parameters
+## ListProcessor
+
+This class provides various methods for processing lists, such as merging lists, getting unique items in a list etc. It takes in a list as input and returns the processed list.
+
+**Inputs:** List
 
 **Outputs:** Processed list
 
-## **IngestData**
-The `IngestData` class is used to read and store data from various sources. It can read data from files, databases, APIs, and other external sources.
+## IngestData
 
-**Inputs:** Data source, connection parameters, query (if applicable)
+This class enables the user to ingest data from various sources and in various formats. It takes in the data source and format as input and returns the ingested data.
+
+**Inputs:** Data source, Data format
 
 **Outputs:** Ingested data
 
-## **IndexData**
-The `IndexData` class allows you to index data in Elasticsearch. It abstracts the interaction with the Elasticsearch API, making it easier to index, update, and delete data within an Elasticsearch cluster.
+## IndexData
 
-**Inputs:** Data, index name, and optional parameters (e.g., index settings, mappings)
+This class enables the user to index data for faster retrieval. It takes in the data to be indexed as input and returns the indexed data.
 
-**Outputs:** Result of the indexing operation
+**Inputs:** Data to be indexed
 
-## **SplitData**
-The `SplitData` class allows you to split data into multiple parts, such as training and testing sets for machine learning purposes.
+**Outputs:** Indexed data
 
-**Inputs:** Data, ratio, and optional parameters (e.g., random seed, stratification)
+## SplitData
 
-**Outputs:** Split data sets
+This class enables the user to split data into train and test sets. It takes in the data and split ratio as input and returns the train and test sets.
 
-## **IngestPDF**
-The `IngestPDF` class enables you to extract text from PDF files.
+**Inputs:** Data, Split ratio
+
+**Outputs:** Train and test sets
+
+## IngestPDF
+
+This class enables the user to ingest PDF files. It takes in the PDF file path as input and returns the extracted text.
 
 **Inputs:** PDF file path
 
-**Outputs:** Extracted text
+**Outputs:** Extracted text from the PDF file
 
-## **IngestDocs**
-The `IngestDocs` class is used to read and extract text from different document formats (e.g., Word, PDF).
+## IngestDocs
 
-**Inputs:** Document file path, file format
+This class enables the user to ingest documents of various formats. It takes in the document file path as input and returns the extracted text.
 
-**Outputs:** Extracted text
+**Inputs:** Document file path
 
-## **HybridSearch**
-The `HybridSearch` class enables you to perform a search using both full-text search and vector search techniques. It combines the results of both search types and provides a single merged list of results.
+**Outputs:** Extracted text from the document
 
-**Inputs:** Query, full-text search index, vector index, and optional parameters (e.g., weightings)
+## HybridSearch
 
-**Outputs:** Merged search results
+This class enables the user to search for relevant information in a hybrid way, combining web search and document search. It takes in the search query and search type as input and returns the relevant results.
 
-## **Summarize**
-The `Summarize` class is used to generate a summarized version of a given text. It utilizes text summarization algorithms to produce a shorter, more concise version of the input text.
+**Inputs:** Search query, Search type
 
-**Inputs:** Input text
+**Outputs:** Relevant search results
+
+## Summarize
+
+This class enables the user to summarize text using various summarization techniques. It takes in the text to be summarized and the summarization technique as input and returns the summarized text.
+
+**Inputs:** Text to be summarized, Summarization technique
 
 **Outputs:** Summarized text
 
-## **Tweet**
-The `Tweet` class enables you to interact with the Twitter API, allowing you to post tweets, read tweets, and perform other operations on the platform.
+## Tweet
 
-**Inputs:** Twitter API credentials, action (tweet, read, etc.), and parameters for the chosen action
+This class enables the user to tweet content using the Twitter API. It takes in the tweet content as input and posts the tweet.
 
-**Outputs:** Result of the requested action
+**Inputs:** Tweet content
 
-## **ScrapeHackerNews**
-The `ScrapeHackerNews` class allows you to scrape data from the Hacker News website, such as top posts and comments.
+**Outputs:** None
 
-**Inputs:** Target URL, data type (posts or comments)
+## ScrapeHackerNews
 
-**Outputs:** Scraped data
+This class enables the user to scrape Hacker News for relevant posts. It takes in the search query and search type as input and returns the relevant posts.
 
-## **FindBestPost**
-The `FindBestPost` class is used to find the best post from a list, based on specific criteria such as votes, comments, or other metrics.
+**Inputs:** Search query, Search type
 
-**Inputs:** Post list, sorting criteria, and optional parameters (e.g., weightings)
+**Outputs:** Relevant posts
+
+## FindBestPost
+
+This class enables the user to find the best post from a list of posts. It takes in the list of posts as input and returns the best post.
+
+**Inputs:** List of posts
 
 **Outputs:** Best post
 
-## **GmailSender**
-The `GmailSender` class allows you to send emails using the Gmail API.
+## GmailSender
 
-**Inputs:** Recipients, subject, body, and optional parameters (e.g., attachments, CC, BCC)
+This class enables the user to send emails using Gmail. It takes in the email content and recipient information as input and sends the email.
 
-**Parameters:** Gmail API credentials
+**Inputs:** Email content, Recipient information
 
-**Outputs:** Result of the email sending operation
+**Outputs:** None
 
-## **PersistVectorIndex**
-The `PersistVectorIndex` class helps you store and manage a vector index for similarity search. It provides methods to save the index to disk, load it from disk, and perform similarity searches on the index.
+## PersistVectorIndex
 
-**Inputs:** Vector index, file path (for saving or loading)
+This class enables the user to persist a vector index to disk. It takes in the vector index and file path as input and persists the vector index to the file.
 
-**Outputs:** Persisted vector index, search results (for similarity search)
+**Inputs:** Vector index, File path
 
-## **CastType**
-The `CastType` class provides methods to cast data between different types, such as strings, numbers, and lists.
+**Outputs:** None
 
-**Inputs:** Input data, target type
+## CastType
 
-**Outputs:** Converted data
+This class provides various methods for casting data types. It takes in the data and type to be cast as input and returns the casted data.
 
-## **ChatBot**
-The `ChatBot` class allows you to create and manage a chatbot using conversational AI models.
+**Inputs:** Data, Type to be casted
 
-**Inputs:** Message list, AI model, and optional parameters (e.g., model settings)
+**Outputs:** Casted data
 
-**Outputs:** Generated response
+## ChatBot
 
-## **FullTextSearch**
-The `FullTextSearch` class enables you to perform full-text search operations on indexed data. It abstracts the interaction with underlying search engines, allowing you to easily query data and get search results.
+This class provides a chatbot interface using various techniques such as keyword matching, similarity matching and deep learning. It takes in the user input as input and returns the chatbot response.
 
-**Inputs:** Query, index name, and optional parameters (e.g., filters, sorting)
+**Inputs:** User input
 
-**Outputs:** Search results
+**Outputs:** Chatbot response
 
-## **CombineStrings**
-The `CombineStrings` class is used to concatenate strings from a list of strings, optionally with a separator.
+## FullTextSearch
 
-**Inputs:** List of strings, separator (optional)
+This class enables the user to perform full-text search on a dataset. It takes in the search query and the dataset as input and returns the relevant results.
+
+**Inputs:** Search query, Dataset
+
+**Outputs:** Relevant search results
+
+## CombineStrings
+
+This class enables the user to combine multiple strings into a single string. It takes in multiple strings as input and returns the combined string.
+
+**Inputs:** Multiple strings
 
 **Outputs:** Combined string
 
-## **InputOperator**
-The `InputOperator` class is a utility class providing methods to handle user input, such as text input and file uploads.
+## InputOperator
 
-**Inputs:** Input type, prompt, and optional validation function
+This class provides various methods for reading input data from various sources. It takes in the input source as input and returns the input data.
 
-**Outputs:** User input
+**Inputs:** Input source
 
-## **VectorizeOperator**
-The `VectorizeOperator` class enables you to convert text into vectors using pre-trained word embeddings or other vectorization techniques.
+**Outputs:** Input data
 
-**Inputs:** Text data, vectorization method, and optional parameters (e.g., pre-trained model)
+## OutputOperator
+
+This class provides various methods for writing output data to various destinations. It takes in the output destination and output data as input and writes the output data to the destination.
+
+**Inputs:** Output destination, Output data
+
+**Outputs:** None
+
+## VectorizeOperator
+
+This class provides various methods for vectorizing data. It takes in the data to be vectorized and the vectorization technique as input and returns the vectorized data.
+
+**Inputs:** Data to be vectorized, Vectorization technique
 
 **Outputs:** Vectorized data
+
+## StoreInDb
+
+This class enables the user to store data in a database. It takes in the database connection string and the data to be stored as input and stores the data in the database.
+
+**Inputs:** Database connection string, Data to be stored
+
+**Outputs:** None
+
+## TextSearchInDb
+
+This class enables the user to perform text search in a database. It takes in the search query and the database connection string as input and returns the relevant results.
+
+**Inputs:** Search query, Database connection string
+
+**Outputs:** Relevant search results
