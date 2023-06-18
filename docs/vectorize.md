@@ -1,42 +1,19 @@
 # VectorizeOperator
 
-**VectorizeOperator** is a class that inherits from **BaseOperator**. Its main functionality is to create a list containing repeated 'element' values of a given length. This length is determined by the provided 'vector'. This operation can be useful when you need to fill a list with a specific value according to a certain size.
+This class inherits from `BaseOperator` and is used to create a list of elements of size equal to the length of a given vector. 
 
-## Class Methods
+The `declare_name` method is a static method that returns the name of the operator. 
 
-### declare_name
+The `declare_category` method is a static method that returns the category of the operator, which is `BaseOperator.OperatorCategory.MANIPULATE_DATA.value`. 
 
-Returns the operator's name: `'Vectorize'`.
+The `declare_description` method is a static method that returns a description of what the operator does. In this case, it creates a list out of an "element" of the same size as a given vector. 
 
-### declare_category
+The `declare_parameters` method is a static method that returns a list of parameters for the operator. In this case, there are no parameters. 
 
-Returns the operator's category: `BaseOperator.OperatorCategory.MANIPULATE_DATA.value`.
+The `declare_inputs` method is a static method that returns a list of inputs for the operator. In this case, there are two inputs: "element", which can be of any data type and "vector", which can also be of any data type. 
 
-### declare_description
+The `declare_outputs` method is a static method that returns a list of outputs for the operator. In this case, there is only one output, "vector_of_elements", which is also of any data type.
 
-Provides a description of the functionality: 
+The `run_step` method takes in two arguments: `step` and `ai_context`. The method gets the "element" and "vector" inputs from the `ai_context` object, creates a list of elements with the same length as the "vector", and sets "vector_of_elements" output in the `ai_context` object.
 
-```
-"Creates a list out of 'element' of size len('vector') like so: [element] * len(vector)"
-```
-
-### declare_parameters
-
-There are *no* parameters declared for this operator.
-
-### declare_inputs
-
-The operator requires two inputs:
-
-1. `element`: This input can be of any data type and will be the value repeated in the resulting list.
-2. `vector`: This input can also be of any data type, and its length determines the size of the resulting list.
-
-### declare_outputs
-
-The operator provides one output:
-
-1. `vector_of_elements`: This output will be a list of the same length as 'vector', comprised of the repeated 'element' values.
-
-## run_step
-
-This method is responsible for the main functionality of the class. It creates the list containing the repeated 'element' values, based on the length of the 'vector' input. The result is then set as the output 'vector_of_elements'.
+Overall, this class is used to manipulate data by creating a list out of an "element" of the same size as a given "vector".
