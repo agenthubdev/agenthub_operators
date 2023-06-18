@@ -1,30 +1,21 @@
 # ReadJsonValues
 
-**ReadJsonValues** is a class that extends `BaseOperator` and is used to read the values of specified keys from a given JSON string and return them as a comma-separated string. The class has a helper method `get_nested_values` that recursively traverses the JSON object to extract the values of the specified keys.
+The **ReadJsonValues** class is a sub-class of the **BaseOperator** class that is responsible for extracting values from a given JSON string based on the specified keys. The *declare* methods declare the attributes of the operator such as its name, category, parameters, inputs, and outputs. 
 
-### Inputs
+The `get_nested_values` method is a helper method that recursively traverses the JSON object to extract the values of the specified keys. If a key contains a dot (.), it is split and the method is called recursively on the object corresponding to the first part of the key. If the value of the key is a list, the method is called on each item in the list.
 
-- `json_string`: A string containing the JSON object that needs to be processed.
-    - data_type: "string"
-    - placeholder: "Enter the JSON string"
+The *run_step* method of the **ReadJsonValues** class takes a JSON string as input and the keys of the values to be extracted as a parameter. It uses the `json.loads` method to parse the JSON string into a Python object. It then calls the `get_nested_values` method to extract the desired values based on the specified keys. The extracted values are then joined into a string and added to the AI context log and set as output for further use.
 
-### Parameters
+## Inputs
 
-- `keys`: A comma-separated string of keys whose values need to be extracted from the JSON string.
-    - data_type: "string"
-    - placeholder: "Ex: 'key1,key2,key3'"
+- `json_string`: A JSON string that contains the values to be extracted.
 
-### Outputs
+## Parameters
 
-- `json_values`: A comma-separated string containing values of the specified keys stored in the input JSON string.
-    - data_type: "string"
+- `keys`: A comma-separated list of keys specifying the values to be extracted.
 
-### Helper Method: get_nested_values
+## Outputs
 
-This method takes a JSON object and a list of keys and returns a list of extracted values in the format `key: value`. This method is used to recursively traverse the JSON object and extract nested values if required.
+- `json_values`: A string containing the extracted values of the specified keys.
 
-- **Arguments**:
-    - `json_object`: The JSON object that needs to be traversed.
-    - `keys`: A list of keys whose values need to be extracted from the input JSON object.
-
-- **Returns**: A list of extracted values in the format `key: value`.
+Overall, the purpose of the **ReadJsonValues** class is to provide a simple way of extracting values from a JSON string based on the specified keys. It achieves this by recursively traversing the JSON object and extracting the values of the specified keys.
