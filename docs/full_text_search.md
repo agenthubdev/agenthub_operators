@@ -1,29 +1,27 @@
-# FullTextSearch
+# **FullTextSearch**
 
-The `FullTextSearch` class is a subclass of `BaseOperator`, which provides an implementation for performing full-text searches on a given input text with respect to a query. This class implements methods for declaring operator metadata, parameter information, and running the actual search step.
-
-**Parameters:**
-- **`nresults`** (integer): The maximum number of search results. Default is 5.
-- **`window_size`** (integer): The search window size in words. Default is 20.
-- **`query`** (string): The query to search for in the input text.
-- **`multiline`** (boolean): Flag indicating whether to allow windows to span multiple lines or not.
+This class provides functionality to scan input text in sliding window fashion and return the most relevant windows to a given query input, up to the specified maximum number of search results. The windows may be restricted to a single line if required. 
 
 **Inputs:**
-- **`text`** (string): The input text on which the full-text search will be performed.
-- **`query`** (string, optional): The input query for the search.
+- text: string input text to be searched
+- query (optional): string query to search for within the text
+
+**Parameters:**
+- nresults: maximum number of search results to return (default: 5)
+- window_size: size of search window in words (default: 20)
+- query: query to search for within the text
+- multiline: whether to allow windows to span multiple lines (default: false)
 
 **Outputs:**
-- **`search_result`** (string): The generated search result.
-- **`search_results_metadata`** ({}[]): Metadata of the search results.
+- search_result: string of the most relevant search results
+- search_result_metadata: metadata output that is not currently used.
 
-The class contains the following helper methods:
+### Helper Methods
 
-- *`token_range_to_string`*: Converts a range of tokens in the given text to a string representation.
-- *`token_match_score`*: Computes the match score between two tokens.
-- *`token_is_word`*: Determines if a given token is a word or not.
+- *token_range_to_string(window, text)*: takes a window range of tokens and the input text and returns a string representation of the window.
+- *token_match_score(t1, t2)*: takes two tokens and matches them, returning a 1.0 if the tokens match
+- *token_is_word(token)*: takes a token and returns True if it is not punctuation, space or a stopword.
 
-## Functionality
+### Method: *run_step*
 
-The `run_step` method is where the actual full-text search is performed. It starts by initializing necessary variables and retrieving input values. The search is performed in a sliding window fashion and returns up to `nresults` windows that are most relevant to the given query. The sliding window size is determined by the parameter `window_size`.
-
-The search is performed using a multidimensional deque `qd`, where each deque stores the query tokens' matching entries in the input text `t`. The algorithm manages a window of tokens [be_i, en_i] in the input text, and calculates a total relevance score `total_s` for this window. The window is slid across the text until all windows have been examined, then relevant windows are merged if they overlap; this process is repeated up to `nresults` times to form the final search results, which are output as a string.
+Takes inputs, parameters and context and performs the required full text search on the input text. It uses several internal helper methods to tokenize the input text, match the query tokens to text tokens and calculate the relevance score of each window in the text. Once the sliding window search is complete, the top ranked windows (up to nresults) are selected and returned as the final output.
