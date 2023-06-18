@@ -1,41 +1,22 @@
-# IngestDocs
+# IngestDocs Operator
 
-The **IngestDocs** class is responsible for ingesting documentation content from a given URL or file. This class is a subclass of the BaseOperator class and is categorized under the CONSUME_DATA operator category.
-
-## Parameters
-
-- `docs_uri`: A string representing the URL of the documentation to be ingested.
+## Summary
+The IngestDocs operator ingests/loads the documentation from a given URL and stores the parsed content as output.
 
 ## Inputs
+This operator does not have any inputs.
 
-- None
+## Parameters
+- **docs_uri**: A string that represents the URL of the documentation website. (e.g., "https://python.langchain.com/en/latest/")
 
 ## Outputs
-
-- `docs_content`: A string containing the ingested documentation content.
+- **docs_content**: A string containing the concatenated content of the scraped documentation.
 
 ## Functionality
+- **run_step()**: This function is the main entry point of the operator. It calls the `ingest` method with the given parameters and the ai_context object.
+- **ingest()**: This method takes params and ai_context as input parameters. It extracts the 'docs_uri' from the params and calls `load_docs` method if it's a valid URL. Otherwise, it does nothing (to implement file ingestion later).
+- **is_url()**: This helper function validates if the given docs_uri string is a valid URL.
+- **download_file()**: This asynchronous function takes a session, URL, and output_directory, downloads the file from the given URL, and saves it to the output_directory.
+- **load_docs()**: This async function takes a URL, downloads all the .html files, and loads the content into a `ReadTheDocsLoader`. The concatenation of the content from all the pages is returned.
 
-The main method in the IngestDocs class is the `ingest()` method, which takes the parameters and the AI context as inputs, and ingests the documentation content using asyncio and aiohttp for asynchronous web scraping.
-
-### Helper Methods
-
-- `is_url(docs_uri)`: This method checks if the provided `docs_uri` is a valid URL.
-- `download_file(session, url, output_directory)`: This method takes a session, URL, and an output_directory, and downloads the file from the URL into the output_directory.
-- `load_docs(url)`: This method takes a URL, scrapes, and downloads the relevant documentation files using the helper methods `download_file()` and `is_url()`. It then loads the ingested content using the ReadTheDocsLoader.
-
-## Example Usage
-
-1. Create an instance of the IngestDocs class.
-2. Call the `ingest()` method with the appropriate parameters and AI context.
-3. Access the ingested documentation content from the AI context through the `docs_content` output.
-
-```markdown
-IngestDocs_obj = IngestDocs()
-params = {'docs_uri': 'https://python.langchain.com/en/latest/'}
-ai_context = AiContext()
-IngestDocs_obj.ingest(params, ai_context)
-docs_content = ai_context.get_output('docs_content', IngestDocs_obj)
-```
-
-The `docs_content` variable will now contain the ingested documentation content as a string. This can then be utilized as needed, such as copying into a markdown generator for further processing or as documentation content in a project README file.
+This operator is utilizing the aiohttp library to perform asynchronous web scraping and downloading of files to provide efficiency in large-scale documentation ingestion.
