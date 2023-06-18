@@ -1,27 +1,40 @@
-# IndexData
+# IndexData Operator
 
-**Index Data** is a class that extends the `BaseOperator` and is responsible for indexing the input text into chunk embeddings. This can be useful when dealing with large texts and requiring efficient operations on text data.
-
-The main function of this class is `run_step`, which takes the input text, cleans it, and generates the vector index by generating embeddings for chunks of the text. The class also includes helper methods to clean text, create batches, and generate chunks for processing.
-
-## Parameters
-
-The `IndexData` class does not require any parameters.
+## Summary
+This operator indexes input text data into embeddings for further processing and analysis.
 
 ## Inputs
+- `text`: A string input containing the text data to be indexed.
 
-- `text`: A string that represents the text to be processed and indexed.
+## Parameters
+This operator does not have any parameters.
 
 ## Outputs
+- `vector_index`: A dictionary containing the embeddings of the indexed text data as keys and the corresponding chunks of text as values.
 
-- `vector_index`: A dictionary containing the vector index of the text, where each key is a string representation of the embedding vector, and the value is the corresponding chunk of text.
+## Functionality
 
-## Helper Methods
+### `run_step`
+The main function of this operator is `run_step`, which takes two parameters:
+- `step`: The current step of the pipeline.
+- `ai_context`: The AI context object to interact with the underlying model and data.
 
-- `clean_text(self, text)`: Removes newline characters from the input text and returns the cleaned text.
+It performs the following tasks:
+- Gets the input text and cleans it by removing newlines characters.
+- Gets the embeddings of the text using the `len_safe_get_embedding` function.
+ - Sets the output `vector_index` for the operator.
+- Logs the completion of indexing with the number of chunk embeddings generated.
 
-- `batched(self, iterable, n)`: Yields batches of size `n` from an iterable.
+### Helper Functions
 
-- `chunked_tokens(self, text, encoding_name, chunk_length)`: Yields chunks of size `chunk_length` for a given input text and encoding_name. This method uses the `batched()` method to create chunks and the `tiktoken` library to handle the encoding.
+#### `clean_text`
+This function takes in a text input and replaces newline characters with spaces.
 
-- `len_safe_get_embedding(self, text, ai_context, max_tokens=EMBEDDING_CTX_LENGTH, encoding_name=EMBEDDING_ENCODING)`: Generates chunk embeddings for the input text. It divides the input text into chunks by calling the `chunked_tokens()` method, gets the embeddings for each chunk using the `ai_context.embed_text()` method, and creates a dictionary with tuple(embedding) as keys and the corresponding chunks as values.
+#### `batched`
+This function takes in an iterable and a batch size (n), and yields batches of the iterable with the specified size.
+
+#### `chunked_tokens`
+This function takes in a text, encoding name, and chunk length, and breaks the text into chunks based on the provided parameters. It uses Tiktoken for encoding and decoding the tokens.
+
+#### `len_safe_get_embedding`
+This function is responsible for generating embeddings for the given text, provided with a specified maximum token length and an encoding name. It iterates through the chunks obtained from `chunked_tokens` and generates an embedding for each chunk. It returns a dictionary containing the embeddings as keys and the corresponding chunks of text as values.
