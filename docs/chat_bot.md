@@ -1,44 +1,46 @@
-# ChatBot
+# Chat Bot Operator Markdown Documentation
 
-**ChatBot** is a class that inherits from `BaseOperator`. This class is used to connect with a chatbot model, receive a user query, and provide an appropriate response based on the conversation history and a vector index.
+## Summary
 
-## Class Methods
-
-Here are the main methods of the **ChatBot** class:
-
-- `declare_name()`: Returns the name of the operator as 'Ask Chat Bot'.
-- `declare_category()`: Returns the operator category as AI.
-- `declare_description()`: Provides a brief description of the class functionality.
-- `declare_parameters()`: Specifies the required parameters for the class which include `vector_index_id` and `query`.
-- `declare_inputs()`: This operator does not accept any inputs.
-- `declare_outputs()`: Defines the output as `response` with a data type of string.
-- `run_step()`: Executes the main functionality of the ChatBot, which includes:
-  - Retrieving the query parameter and model name.
-  - Embedding the text of the query.
-  - Getting the vector index based on the passed ID.
-  - Limiting the tokens for the model to prevent exceeding the token limit.
-  - Incorporating hybrid search results into the prompt.
-  - Loading chat history up to the token budget allowed.
-  - Running the chat completion based on the conversation history and user query.
-  - Storing the chatbot response as an output and adding it to the conversation log.
-
-## Parameters
-
-- `vector_index_id`: A unique string identifier for the persisted vector index, usually printed by Persist Vector Index.
-- `query`: A string containing the user's question for the chatbot.
+A Chat Bot operator that answers questions using a given vector index and the conversation history of the current user.
 
 ## Inputs
 
-This class does not require any inputs.
+There are no inputs to this operator.
+
+## Parameters
+
+- `vector_index_id` (string): The unique identifier of the vector index, used for embedding and searching. Typically printed by Persist Vector Index.
+- `query` (string): The user's question to be answered by the chat bot.
 
 ## Outputs
 
-- `response`: A string containing the chatbot's response to the user query.
+- `response` (string): The chat bot's answer to the user's question.
 
 ## Functionality
 
-The main purpose of the **ChatBot** class is to interact with a chat model, process user queries, and provide suitable responses based on the conversation context. The class uses helper methods to include context from a hybrid search (using a vector index), manage token limits, and load conversation history into the chat model.
+### `run_step`
 
-When run, the `run_step()` method takes the input parameters, processes the query, and generates a chatbot response. The response is then stored as an output and added to the conversation log.
+The `run_step` function follows the given steps:
 
-In summary, the **ChatBot** class combines conversation history with a relevant embedded context to provide an appropriate response based on the user query.
+1. Extract parameters from the step dictionary.
+2. Embed the query text and obtain the model name.
+3. Retrieve the vector index using the vector index ID.
+4. Set token limits and budgets for different parts of the prompt.
+5. Incorporate the results of the Hybrid search into the prompt:
+    - Sort chunks by similarity to the query.
+    - Select the most relevant chunks and add them to the prompt as context.
+6. Load chat history up to `chat_history_token_budget`:
+    - Retrieve chat history from memory.
+    - Make an AI response using the combined prompt and the chat history.
+    - Store the AI response as the output ("response").
+7. Add the user query and system response to chat history.
+
+### Helper Functions
+
+The `run_step` function is supported by the following helper functions:
+
+- `sort_chunks_by_similarity`: Sorts chunks stored in a vector index by their similarity to the query embedding.
+- `select_most_relevant_chunks`: Selects the most relevant chunks based on their similarity and the budget to fit in the prompt.
+- `get_max_tokens_for_model`: Returns the maximum number of tokens allowed for a given model.
+- `count_tokens`: Counts tokens in a given text, considering the model's specifications.
