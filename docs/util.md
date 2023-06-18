@@ -1,58 +1,30 @@
-# Code Documentation
+# Markdown Documentation
 
-This documentation explains the code provided in a structured format, with an emphasis on the helper functions and their functionality.
+## Summary
+This code provides a set of helper functions for managing and interacting with OpenAI language models, specifically in the task of ranking and selecting relevant text chunks based on computed similarity and token constraints.
 
-## **get_max_tokens_for_model**
+## Inputs
+- `model_name (str)`: The name of the OpenAI language model.
+- `s (str)`: A text string to be evaluated.
+- `query_emb (array)`: The query embedding for which similarity is to be calculated.
+- `vector_index (dict)`: A dictionary containing embeddings and their corresponding text chunks.
+- `token_budget (int)`: The maximum number of tokens that can be included in the resultant selected chunks.
 
-This function receives a `model_name` as input and returns the maximum number of tokens supported by that model.
+## Parameters
+- `emb_tuple`: Tuple containing the precomputed embeddings of the text.
+- `text`: The text chunk corresponding to the precomputed embeddings.
+- `similarity`: The computed similarity score between the query embedding and the text chunk embeddings.
+- `token_limits`: A dictionary that maps model names to their maximum token limits.
 
-**Parameters:**
-- `model_name` (str): The name of the model.
+## Outputs
+- `max_tokens (int)`: The maximum token limit for a specific model.
+- `cosine_dist (float)`: The cosine similarity between two input vectors.
+- `num_tokens (int)`: The number of tokens in a given text string according to a given language model.
+- `selected_chunks (list)`: A list containing the chosen text chunks based on similarity and token constraints.
 
-**Returns:**
-- `max_tokens` (int): The maximum number of tokens supported by the given model.
-
-## **cosine_distance**
-
-This function calculates the cosine distance between two input vectors `v1` and `v2`.
-
-**Parameters:**
-- `v1` (array-like): The first input vector.
-- `v2` (array-like): The second input vector.
-
-**Returns:**
-- `distance` (float): The cosine distance between the two input vectors.
-
-## **count_tokens**
-
-This function counts the number of tokens in the input string `s` using the encoding specified by the `model_name`.
-
-**Parameters:**
-- `s` (str): The input string to count tokens in.
-- `model_name` (str): The name of the model to use for encoding.
-
-**Returns:**
-- `num_tokens` (int): The number of tokens in the input string.
-
-## **sort_chunks_by_similarity**
-
-This function sorts a list of text chunks by their similarity to a given query embedding.
-
-**Parameters:**
-- `query_emb` (array-like): The query embedding to compare text chunks against.
-- `vector_index` (dict): A dictionary that maps embedding tuples to text chunks.
-
-**Returns:**
-- `chunks` (list): A sorted list of tuples containing the negative similarity, embedding tuple, and corresponding text chunk.
-
-## **select_most_relevant_chunks**
-
-This function selects the most relevant text chunks based on the sorted chunks, a token budget, and a given model name.
-
-**Parameters:**
-- `sorted_chunks` (list): A sorted list of tuples containing the negative similarity, embedding tuple, and corresponding text chunk.
-- `token_budget` (int): The maximum number of tokens allowed for the output.
-- `model_name` (str): The name of the model to use for encoding.
-
-**Returns:**
-- `selected_chunks` (list): A list of the most relevant text chunks within the token budget.
+## Functionality
+- `get_max_tokens_for_model(model_name)`: Returns the maximum token limit for a specified language model.
+- `cosine_distance(v1, v2)`: Computes the cosine similarity between two input vectors.
+- `count_tokens(s, model_name)`: Counts the number of tokens in a given text string according to a specified language model.
+- `sort_chunks_by_similarity(query_emb, vector_index)`: Sorts the text chunks in the vector index based on their computed similarity to the given query embedding.
+- `select_most_relevant_chunks(sorted_chunks, token_budget, model_name)`: Selects the most relevant text chunks based on similarity and token constraints, ensuring the total token count remains within the specified token_budget.
