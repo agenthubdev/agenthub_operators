@@ -1,44 +1,15 @@
-# ChatBot
+## **ChatBot**
 
-**ChatBot** is a class that inherits from `BaseOperator`. This class is used to connect with a chatbot model, receive a user query, and provide an appropriate response based on the conversation history and a vector index.
+The `ChatBot` class is a subclass of `BaseOperator` used for integrating a chat bot into a given `vector_index_id`. The purpose of this class is to take a `query` parameter (the user's question) and use the `vector_index_id` specified to search for the most similar chunks from the history (i.e. user inputs) to include in the prompt. The class then loads up to `chat_history_token_budget` (a pre-specified budget of available tokens) of the chat history, along with the prompt, to generate an AI response. 
 
-## Class Methods
+The `ChatBot` class has several helper methods. The `declare_parameters()` method returns a list of two dictionaries containing the `name` and `data_type` of the `vector_index_id` and `query` parameters respectively. The `declare_inputs()` method returns an empty list, since inputs are not required for the `ChatBot` class. Meanwhile, `declare_outputs()` method returns a dictionary with a single key, `response`, which has a `data_type` of string.
 
-Here are the main methods of the **ChatBot** class:
+The `run_step()` method uses `get_max_tokens_for_model()` and `count_tokens()` to count the number of available tokens for generating the AI response. It then computes the `context_token_budget` and `hybrid_search_token_budget` which are used for selecting a list of the most relevant chunks. It does this by sorting chunks by similarity and then selecting the most relevant chunks that would fit into the `hybrid_search_token_budget`.
 
-- `declare_name()`: Returns the name of the operator as 'Ask Chat Bot'.
-- `declare_category()`: Returns the operator category as AI.
-- `declare_description()`: Provides a brief description of the class functionality.
-- `declare_parameters()`: Specifies the required parameters for the class which include `vector_index_id` and `query`.
-- `declare_inputs()`: This operator does not accept any inputs.
-- `declare_outputs()`: Defines the output as `response` with a data type of string.
-- `run_step()`: Executes the main functionality of the ChatBot, which includes:
-  - Retrieving the query parameter and model name.
-  - Embedding the text of the query.
-  - Getting the vector index based on the passed ID.
-  - Limiting the tokens for the model to prevent exceeding the token limit.
-  - Incorporating hybrid search results into the prompt.
-  - Loading chat history up to the token budget allowed.
-  - Running the chat completion based on the conversation history and user query.
-  - Storing the chatbot response as an output and adding it to the conversation log.
+The selected chunks and the user's question are combined to form the `prompt`, which also includes the `context`.
 
-## Parameters
+The AI response is generated through the `run_chat_completion()` method which takes in `msgs` (messages exchanged during the chat session) and returns the AI-generated response. 
 
-- `vector_index_id`: A unique string identifier for the persisted vector index, usually printed by Persist Vector Index.
-- `query`: A string containing the user's question for the chatbot.
+At the end of each chat session, the `ChatBot` class stores the user's question and the corresponding AI response in the `chat_history_memory_name` specified by the `vector_index_id`.
 
-## Inputs
-
-This class does not require any inputs.
-
-## Outputs
-
-- `response`: A string containing the chatbot's response to the user query.
-
-## Functionality
-
-The main purpose of the **ChatBot** class is to interact with a chat model, process user queries, and provide suitable responses based on the conversation context. The class uses helper methods to include context from a hybrid search (using a vector index), manage token limits, and load conversation history into the chat model.
-
-When run, the `run_step()` method takes the input parameters, processes the query, and generates a chatbot response. The response is then stored as an output and added to the conversation log.
-
-In summary, the **ChatBot** class combines conversation history with a relevant embedded context to provide an appropriate response based on the user query.
+Overall, the `ChatBot` class is useful in incorporating a chat bot into a vector index search, it produces more relevant responses by including the most similar conversation fragments.
