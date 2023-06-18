@@ -1,31 +1,25 @@
-# IngestPDF
+# **IngestPDF**
 
-The **IngestPDF** class is an extension of the `BaseOperator` and focuses on ingesting PDF files either through a direct upload, a URL or from your local storage. It extracts the content from the PDF and provides output as plain text.
-
-## Key Methods
-
-- `declare_name()`: declares the name of the operator as 'Ingest PDF'
-- `declare_category()`: sets the operator's category to 'CONSUME_DATA.value'
-- `declare_allow_batch()`: returns `True` if batch processing is allowed
-- `declare_parameters()`: defines and returns the required parameters such as 'pdf_uri', 'uploaded_file_name'
-- `declare_inputs()`: defines the optional inputs such as 'file_name'
-- `declare_outputs()`: defines the output key 'pdf_content' which is the extracted text from the PDF
-- `run_step(step, ai_context)`: main function that extracts the content from the given PDF file
-- `ingest(pdf_uri, file_name, uploaded_file_name, ai_context)`: ingests a PDF file from either direct upload, URL or from the local storage
-- `is_url(pdf_uri)`: checks if the provided `pdf_uri` parameter is a valid URL
-- `load_pdf_from_uri(url)`: loads the content of the PDF from a URL
-- `load_pdf_from_storage(file_name, generated_this_run, ai_context)`: loads the content of the PDF from your local storage (either generated this run or not)
-- `read_pdf(pdf)`: reads the content of the PDF and returns it as plain text
-
-## Parameters
-
-- `pdf_uri`: string, URL of the PDF file (optional)
-- `uploaded_file_name`: string, the name of the PDF file previously uploaded to the workspace (optional)
+This class is a subclass of the **BaseOperator** class and is used to convert a PDF file to a blob of text. The PDF file can be either a URI or a file that the user uploaded to their workspace on AgentHub. 
 
 ## Inputs
+There are two optional input parameters: **pdf_uri** and **uploaded_file_name**. **pdf_uri** takes a string value representing the URL of the PDF to be ingested. **uploaded_file_name** represents the name of the uploaded PDF to be ingested.
 
-- `file_name`: string, the name of the PDF file provided as input (optional)
+## Parameters
+There are two parameters, **pdf_uri** and **uploaded_file_name**. Both take string values and can be optionally passed as inputs.
 
 ## Outputs
+The class has one output parameter: **pdf_content**, which is a string representing the text content of the ingested PDF.
 
-- `pdf_content`: string, the extracted text from the PDF
+## Methods
+### `ingest(self, pdf_uri, uploaded_file_name, ai_context)`
+This method handles the ingestion of the PDF file and reads its content. Depending on the input parameters, it loads the PDF file either from a URL or from storage. It then reads the content of the PDF file using the **read_pdf** helper method and sets the output parameter **pdf_content**.
+
+### `load_pdf_from_uri(self, url)`
+This method loads the content of the PDF file from a URL.
+
+### `load_pdf_from_storage(self, file_name, generated_this_run, ai_context)`
+This method loads the content of the PDF file from storage. It takes in a boolean value, **generated_this_run**, that indicates if the file was generated in the current run.
+
+### `read_pdf(self, pdf)`
+This method reads the content of the PDF file and returns it as a string. It uses the **tabula.read_pdf** method to read the content.
