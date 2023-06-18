@@ -1,29 +1,26 @@
-# FullTextSearch
+# Full Text Search Operator
 
-The `FullTextSearch` class is a subclass of `BaseOperator`, which provides an implementation for performing full-text searches on a given input text with respect to a query. This class implements methods for declaring operator metadata, parameter information, and running the actual search step.
+## Summary
+This operator performs a full text search on the input text and returns the most relevant windows based on the given query.
 
-**Parameters:**
-- **`nresults`** (integer): The maximum number of search results. Default is 5.
-- **`window_size`** (integer): The search window size in words. Default is 20.
-- **`query`** (string): The query to search for in the input text.
-- **`multiline`** (boolean): Flag indicating whether to allow windows to span multiple lines or not.
+## Inputs
+- `text`: The input text to be searched. DataType: string.
+- `query`: The query to search for in the text. DataType: string. Optional.
 
-**Inputs:**
-- **`text`** (string): The input text on which the full-text search will be performed.
-- **`query`** (string, optional): The input query for the search.
+## Parameters
+- `nresults`: Maximum number of search results. Default value: 5. DataType: integer.
+- `window_size`: Search window size in words. Default value: 20. DataType: integer.
+- `query`: The query to search for in the text. DataType: string.
+- `multiline`: Determines whether to allow windows to span multiple lines. DataType: boolean.
 
-**Outputs:**
-- **`search_result`** (string): The generated search result.
-- **`search_results_metadata`** ({}[]): Metadata of the search results.
-
-The class contains the following helper methods:
-
-- *`token_range_to_string`*: Converts a range of tokens in the given text to a string representation.
-- *`token_match_score`*: Computes the match score between two tokens.
-- *`token_is_word`*: Determines if a given token is a word or not.
+## Outputs
+- `search_result`: The search result, containing text snippets that are most relevant to the query. DataType: string.
+- `search_results_metadata`: Metadata about the search results. DataType: {}[].
 
 ## Functionality
+The main function, `run_step`, is responsible for performing the full text search. It takes in the input parameters and text and uses the `nlp` object from the imported `spaCy` library. This function does a sliding window search on the input text and calculates a relevance score for each window based on the frequency and score of matching query tokens in the window. The sliding window search takes into account the optional parameter `multiline`, which controls whether the search results can span multiple lines or not. The final search result is a combination of the most relevant windows, specified by the `nresults` parameter.
 
-The `run_step` method is where the actual full-text search is performed. It starts by initializing necessary variables and retrieving input values. The search is performed in a sliding window fashion and returns up to `nresults` windows that are most relevant to the given query. The sliding window size is determined by the parameter `window_size`.
-
-The search is performed using a multidimensional deque `qd`, where each deque stores the query tokens' matching entries in the input text `t`. The algorithm manages a window of tokens [be_i, en_i] in the input text, and calculates a total relevance score `total_s` for this window. The window is slid across the text until all windows have been examined, then relevant windows are merged if they overlap; this process is repeated up to `nresults` times to form the final search results, which are output as a string.
+Below are the helper functions used within the `run_step` function:
+- `token_range_to_string`: Given a window of tokens and the text, it converts the token range into a string.
+- `token_match_score`: Given two tokens, this function calculates the score for a token match. It currently returns 1 if both tokens are the same, and 0 if they are different.
+- `token_is_word`: Given a token, this function checks if it is a word token or not, by checking if it's not a punctuation, space, or stop word.
