@@ -1,38 +1,25 @@
-# GmailReader
+# **GmailReader**
 
-**GmailReader** is a class that extends the **BaseOperator**. It's main purpose is to connect to a Gmail account, read emails (consuming data), and optionally upload attachments to Google Cloud Storage for further processing.
+The `GmailReader` class is a custom operator that retrieves unread emails from a Gmail account. It uses the IMAP protocol to connect to the inbox, and can retrieve the entire contents of the email including attachments. Optionally, it can mark the email as read after retrieval.
 
-## Inputs
-- **email_id** (string, optional): If provided, only the specific email with the given email_id will be retrieved. If not provided, unread emails in the inbox will be retrieved.
+## Input
+- `email_id` (optional): The unique ID of the email to retrieve. If not provided, retrieves all unread messages.
 
 ## Parameters
-- **email** (string): The email address that the GmailReader will connect to.
-- **password** (string): The password for the email account.
-- **mark_as_read** (boolean): If set to true, the email(s) will be marked as read after being processed. If not provided or set to false, the emails will remain unread.
+- `email`: The email address to connect to.
+- `password`: The password for the email account.
+- `mark_as_read`: Whether to mark the email retrieved as read (default is False).
 
 ## Outputs
-- **email_data** (string[]): A list containing the extracted email data that includes the following information for each email: id, From, Subject, Date, Body, and the uploaded file names (if any).
-- **attached_file_names** (string[]): A list containing the attached files' names found in the emails.
+- `email_data`: A list of JSON strings representing each retrieved email.
+- `attached_file_names`: A list of the file names of any attachments that were uploaded to a specified destination.
 
-## Helper Methods
-
-### read_emails
-
-`read_emails` is responsible for handling the main functionality of the GmailReader, connecting to the Gmail account, reading emails, uploading attachments to Google Cloud Storage, and extracting relevant data. It takes the following parameters:
-
-- **user** (str): The email address.
-- **password** (str): The password for the email account.
-- **mark_as_read** (bool): Indicates if the emails should be marked as read after processing them.
-- **email_id** (str): If provided, only the email with the given email_id will be retrieved. If not provided, unread emails in the inbox will be retrieved.
-- **ai_context**: An object to access and manage the context of the AI run.
-
-It returns two lists: `all_email_data` which contains the extracted email data, and `all_uploaded_files` which contains the file names of the uploaded attachments.
-
-### upload_attachments
-
-`upload_attachments` is a helper method to upload the attachments found in the emails to Google Cloud Storage, using the provided `file_paths` and `ai_context`. It takes the following parameters:
-
-- **file_paths**: A list of file paths pointing to the attachments to be uploaded.
-- **ai_context**: An object to access and manage the context of the AI run.
-
-It returns a list `uploaded_files` containing the file names of the uploaded attachments.
+## Helper methods
+- `declare_name()`: Returns the name of the operator.
+- `declare_category()`: Returns the category of the operator.
+- `declare_parameters()`: Returns a list of dictionaries, where each dictionary contains metadata about an input parameter.
+- `declare_inputs()`: Returns a list of dictionaries, where each dictionary contains metadata about an input.
+- `declare_outputs()`: Returns a list of dictionaries, where each dictionary contains metadata about an output.
+- `run_step(self, step, ai_context)`: Runs the operator and sets the output using the `ai_context` object provided.
+- `read_emails(self, user, password, mark_as_read, email_id, ai_context)`: Reads emails from the Gmail account based on the input parameters, and returns a tuple of email data and uploaded files.
+- `upload_attachments(self, file_paths, ai_context)`: Uploads attachments to a specified destination using the `ai_context` object provided.
