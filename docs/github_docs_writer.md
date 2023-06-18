@@ -1,37 +1,39 @@
-# GitHubDocsWriter
+# GitHub Docs Writer
 
-The `GitHubDocsWriter` class is a custom operator that focuses on providing **structured documentation** for the code in markdown format. It takes into consideration the comments within the code and offers a summary of the functionality. By digesting the code into an accessible format, the class contributes to an easily comprehended understanding of the code's purpose and operation.
+## Summary
 
-## Key functionalities:
+The GitHub Docs Writer operator automatically generates documentation in markdown format for a given code, and creates a pull request in a specified GitHub repository.
 
-- Declare the **name**, **category**, **parameters**, **inputs**, and **outputs** of the operator.
-- *run_step()* method to create a branch, modify files, and create a pull request.
-- *create_branch_with_backoff()* helper method to create a branch with exponential backoff in case of errors.
+## Inputs
 
-## Parameters:
+- `code_content`: A list of dictionaries with the following keys:
+  - `name`: The file path of the code file
+  - `content`: The content of the code file to generate documentation
 
-1. `repo_name`: Repository name in the format `user_name/repository_name`.
-2. `docs_folder_name`: Name of the folder where the documentation files will be stored.
+## Parameters
 
-## Inputs:
+- `repo_name`: The full name of the GitHub repository to create a pull request in, in the format "user_name/repository_name".
+- `docs_folder_name`: The name of the folder in the repository where the generated documentation files should be placed.
 
-- `code_content`: An array of objects containing the name and content of the code files.
+## Outputs
 
-## Outputs:
+There are no defined outputs for this operator.
 
-- No Outputs.
+## Functionality
 
-### Purpose of the class:
+The `run_step` function performs the following actions:
 
-This class aims to:
+1. Retrieves the specified repository and creates a fork.
 
-1. Create a new branch in a forked version of the input repository.
-2. Generate structured documentation in the form of Markdown files for inputted code files, considering comments and providing an explanation of the functionality.
-3. Add or update the documentation files in the new branch.
-4. Create a pull request to merge the changes in the new branch into the original repository.
+2. Retrieves the base branch ("main" by default) and creates a new branch in the forked repository with a unique name based on the Agent Hub run ID.
 
-### Helper Method's Functionality:
+3. Iterates through the provided code files in the `code_content` input:
+   - For each code file, generates a markdown documentation file using the given content.
+   - If the markdown file already exists in the original repository, updates the file in the new branch of the forked repository.
+   - If the markdown file does not exist, creates a new file in the new branch of the forked repository.
 
-- `create_branch_with_backoff`: This method tries to create a branch with a specified name in the forked repository. In case of errors, it retries the operation with exponential backoff and a random jitter, thus avoiding excessive retries in a short period. The parameters `max_retries` and `initial_delay` allow to fine-tune the backoff behavior if needed.
+4. Creates a pull request in the original repository to merge the new branch from the forked repository.
 
-**Note**: The generated output will be in unrendered markdown format, which allows it to be easily copied into a markdown generator.
+Additionally, there is a helper function `create_branch_with_backoff` that handles branch creation with retries and backoff in case of failure.
+
+The generated pull request contains the markdown documentation for the supplied code content.
