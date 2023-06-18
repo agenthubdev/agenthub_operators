@@ -1,29 +1,24 @@
-### **CastType**
+# **CastType Class**
 
-The `CastType` class is a `BaseOperator` that changes the format of a given input data into the specified output data type. Its main goal is to convert the input data to either a list or a string, ensuring the format best fits the requested output type. The structure and comments in the code will help you understand the functionality of the class and serve as a guide to its usage.
+The `CastType` class is a subclass of `BaseOperator`. It provides functionality to cast inputs to a specified output type.
 
-**Inputs:**
+## **Inputs**
+- `input`: input data of any data type
 
-- `input`: An input of any data type.
+## **Parameters**
+- `output_type`: the output type to cast the input data to
 
-**Parameters:**
+## **Outputs**
+- `output`: the casted output data of any data type
 
-- `output_type`: The desired output type. It can be either "string" or "string[]".
+The `ai_context` parameter is provided by the `BaseOperator` parent class.
 
-**Outputs:**
+The `run_step()` function is the main method of this class, which is called when the operator is executed. It takes in the inputs and parameters specified and casts the input data to the output type.
 
-- `output`: The converted data output of any data type.
+The `best_effort_string_to_list()` method is a helper function that attempts to convert a string input to a list, if possible.
 
-#### Helper method: *best_effort_string_to_list(self, s)*
+The `declare_name()`, `declare_category()`, `declare_parameters()`, `declare_inputs()`, and `declare_outputs()` functions are static methods that declare metadata about the operator, such as its name, category, inputs, parameters, and outputs.
 
-This method takes a string `s` as input and, to the best of its ability, converts it to a list. First, it tries to decode the string as a JSON object. If successful, it returns the resulting object wrapped in a list (if it's a dictionary) or the decoded list itself (if the JSON object is already a list). If decoding the JSON fails, it splits the string by commas and returns a list containing the separated items.
+The operator first checks the data type of the input and the requested output type. If the input data type is 'Document[]', the operator joins the page content of all `Document` objects in the input data and sets the output to the resulting string. If the input data type is 'string', the operator tries to convert it to a list by either parsing the string as a JSON object or splitting it by commas and removing whitespace from the resulting list.
 
-**Functionality**
-To achieve its goal, the `run_step` method does the following:
-
-1. Fetches the input and its data type, and the specified output type.
-2. Checks if the input type is "Document[]" and if the output type is "string". If true, it joins the page_content of each document and sets the output to the resulting string.
-3. If the input type is "string" and the output type is either "[]" or "string[]", the `best_effort_string_to_list` method is called to convert the string into a list and the result is set as the output.
-4. If none of the above conditions are met, an error is raised indicating that the code cannot cast the input to the specified output type.
-
-By following this process, the `CastType` class provides a simple way to convert a given input data type into the desired output data type.
+If the input data type is not recognized or cannot be cast to the requested output type, the operator raises a TypeError.
