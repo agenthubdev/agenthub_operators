@@ -1,26 +1,32 @@
-# SleepOperator
+# **Sleep Operator**
 
-The **SleepOperator** is a simple class that extends from the `BaseOperator`. Its main purpose is mostly for testing and does nothing else other than making the program sleep for a given amount of time. This class doesn't have any input or output data, but has one parameter that needs to be provided.
+This class extends the BaseOperator class and declares a simple functionality of sleeping for a specified number of seconds. It is intended for testing purposes only and does not have any significant impact on the execution of a workflow.
 
-## Description
-`declare_description` returns the description of this operator as: `'Just sleeps and does nothing useful, we are mostly adding it for testing purposes.'`
 
-## Name
-`declare_name` returns the name of this operator as: `'Sleep Operator'`
+## Helper methods
 
-## Category
-`declare_category` returns the category of this operator, which is the `MISC` category.
+- **declare_visibility():** This method declares the visibility of the operator to be "team" and "agenthub".
+- **declare_description():** This method returns a description of the operator's function as "Just sleeps and does nothing useful...".
+- **declare_name():** This method declares the name of the operator as "Sleep Operator".
+- **declare_category():** This method declares the category of the operator as "MISC" within the base operator class.
+- **declare_parameters():** This method declares a list of input parameters the operator requires as just one parameter: a string specifying the number of seconds to sleep for.
+- **declare_inputs():** This method declares the input requirements of the operator. This operator does not require any inputs.
+- **declare_outputs():** This method declares the output requirements of the operator. This operator does not require any outputs.
 
-## Parameters
-`declare_parameters` returns a list of parameters required by this operator:
+## Main function
 
-- `sleep_seconds`: A string representing the number of seconds that the program should sleep for. This value will be converted to float before being used.
+- **run_step(self, step, ai_context):** The method takes two parameters, step and ai_context. Step is a dictionary containing the parameters required to execute this operator while ai_context contains context object needed for the execution of the operator.
+
+    The method first fetches the sleep_second input parameter from the step object and then converts it to a floating-point number. The operator then calls the time.sleep method passing the sleep time argument.
 
 ## Inputs
-`declare_inputs` returns an empty list, as this operator doesn't have any input data to work with.
+
+This operator does not require any input parameter from the user.
+
+## Parameters
+
+- **sleep_seconds:** The number of seconds to sleep for.
 
 ## Outputs
-`declare_outputs` returns an empty list, as this operator doesn't have any output data.
 
-## Method: run_step
-This method takes the step and the ai_context as its input arguments and uses the `sleep_seconds` parameter to make the program sleep for the specified amount of time. It doesn't have any output or specific functionality other than pausing the program execution for the given time.
+This operator does not have any output parameter.
