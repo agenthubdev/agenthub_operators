@@ -1,30 +1,47 @@
-## WebSearch
+# **WebSearch**
 
-**WebSearch** is a class that inherits from the BaseOperator class and provides functionality to search Google for a given query, leveraging Google's Custom Search API to retrieve specified number of search results including links and snippets. The main method this class provides is `run_step()`, which runs the search, retrieves the results, and sets the output to be consumed by further operators.
+This class represents an operator used for making Google searches and outputting the search results. It uses the Google Custom Search API and AI chat completion to take in a query (either from user input or a parameter) and return a list of URLs and snippets for the top results of a Google search. 
 
-### Inputs:
-- `query`: A string containing the search query.
+## Inputs
+- None
 
-### Parameters:
-- `query`: A string containing the search query.
-- `results_count`: An integer specifying the number of search results to be returned.
+## Parameters
+- **query**: (string) The search query to be used for the Google search
+- **results_count**: (integer) The number of search results to be returned
 
-### Outputs:
-- `search_results`: A list of dictionaries containing search results with the URL in the 'name' key and snippet in the 'content' key.
+## Outputs
+- **search_results**: A list of dictionaries containing the URL and snippet for each search result. 
 
-### Helper methods:
+## Helper Methods
 
-- `declare_name()`: A static method that returns the name of the operator as 'Web search'.
-- `declare_category()`: A static method that returns the category of the operator set to BaseOperator.OperatorCategory.CONSUME_DATA.value.
-- `declare_parameters()`: A static method that returns a list of dictionaries, providing information about the parameters that this operator expects.
-- `declare_inputs()`: A static method that returns an empty list to signify that the operator does not accept any inputs.
-- `declare_outputs()`: A static method that returns a list of dictionaries, providing information about the expected output of the operator.
-- `get_urls_and_snippets(google_res)`: A method that takes the Google Search API response (as a dictionary) and extracts the URLs and snippets for each search result, returning them as separate lists.
-- `gen_prompt(step, ai_context)`: A method that generates a prompt for the AI model based on the given query, so it can provide a suitable search query.
-- `google_search(query, num_results, ai_context)`: A method that connects to Google's Custom Search API with the given query and specified number of results, returning a list of URLs as the search results.
+### `declare_name()`
+- Returns the name of the operator as a string.
 
-### Usage:
+### `declare_category()`
+- Returns the category of the operator as a string (in this case, "CONSUME_DATA").
 
-The class is used to perform a Google search based on user input. It can be instantiated with particular inputs, parameters, and outputs specified by the user.
+### `declare_parameters()`
+- Returns a list of dictionaries containing the name, data type, and placeholder text for each parameter.
 
-After running the `run_step()` method with the given `step` parameter and the AI context, it generates a search query using the AI model, sends the query to Google's Custom Search API, retrieves the search results, and finally sets the output containing the search results. These output results can be consumed by other operators in the processing pipeline.
+### `declare_inputs()`
+- Returns a list of inputs for the operator (in this case, an empty list since there are no inputs).
+
+### `declare_outputs()`
+- Returns a list of outputs for the operator, which consists of a list of dictionaries containing the URL and snippet for each search result.
+
+### `run_step(self, step, ai_context)`
+- Gets the search query from either user input or a parameter.
+- Uses the query to make a Google search and extract the URLs and snippets for the top results.
+- Outputs the list of search results to the "search_results" output.
+
+### `get_urls_and_snippets(self, google_res)`
+- Extracts the URLs and snippets from the Google search results.
+- Returns two lists: one containing the titles and snippets, and one containing the URLs.
+
+### `gen_prompt(self, step, ai_context)`
+- Generates a prompt for AI chat completion to get the search query from the user.
+- Returns the prompt as a string.
+
+### `google_search(self, query, num_results, ai_context) -> list[str]`
+- Uses the Google Custom Search API to make a Google search.
+- Returns the search results as a list of dictionaries.
