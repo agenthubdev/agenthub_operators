@@ -1,28 +1,26 @@
-## CombineStrings
+# **CombineStrings**
+This class is a subclass of `BaseOperator` and is designed to combine two input strings into one string. It takes in two strings as optional inputs, a string format as a parameter, and outputs a single string that is a combination of the two input strings.
 
-CombineStrings is a class that inherits from the `BaseOperator` class. It provides functionality to combine two input strings according to a given format. The format will include placeholders for the inputs, `{input1}` and `{input2}`. The class makes use of utility methods from the `AiContext` class.
+## Methods
+### declare_name()
+This method returns the name of the operator which is used to identify the operator in the workflow.
 
-### Main Method
+### declare_category()
+This method returns the category to which the operator belongs.
 
-1. **Run_step(self, step, ai_context: AiContext)**: Takes the step and AI context as input, fetches the strings from AI context, combines them according to the format provided in the step parameters, and sets the output to a combined string. If any exceptions occur, log the error message.
+### declare_parameters()
+This method returns an array of parameters that the user of this class can pass in when creating an instance of the class. In this case, there is only one parameter called `format` which is a string format that will be used to combine the input strings.
 
-### Helper Methods
+### declare_allow_batch()
+This method returns a boolean value indicating if batch processing is allowed.
 
-1. **Declare_name()**: Returns the name 'CombineStrings'.
-2. **Declare_category()**: Returns the category of the operator, which is in this case 'MANIPULATE_DATA'.
-3. **Declare_parameters()**: Returns a list of the required parameters, which should include a single JSON object with name 'format' and data type 'string'.
-4. **Declare_allow_batch()**: Indicates that this operator supports batch processing.
-5. **Declare_inputs()**: Returns a list of required inputs, which are:
-    - input1: a string, with the placeholder: "Enter the first input string".
-    - input2: a string, with the placeholder: "Enter the second input string".
-6. **Declare_outputs()**: Returns a list of expected outputs, which is a JSON object having key "combined_string" with data type 'string'.
+### declare_inputs()
+This method returns an array of input objects that the user of this class can pass in when calling the `run_step()` method. In this case, there are two optional input objects called `input1` and `input2`. These input objects are of type `string`.
 
-### Parameters
-- **format**: A string with placeholders `{input1}` and `{input2}` indicating where the input strings should be placed in the final combined string.
+### declare_outputs()
+This method returns an array of output objects that the user of this class can access after calling the `run_step()` method. In this case, there is only one output object called `combined_string`. This output object is of type `string`.
 
-### Inputs
-- **input1**: The first input string.
-- **input2**: The second input string.
+### run_step()
+This method takes in two arguments, a `step` dictionary containing the values of the parameters passed in by the user, and an `AiContext` object containing information about the inputs and outputs. The purpose of this method is to combine the input strings and return the combined string as output. It first retrieves the values of the `input1` and `input2` objects from the `AiContext` object. It then retrieves the value of the `format` parameter from the `step` dictionary. Finally, it uses the Python `format()` method to combine the two input strings using the `format` string. The resulting combined string is set as the value of the `combined_string` output object of the `AiContext` object.
 
-### Outputs
-- **combined_string**: The final combined result in which input strings are placed according to the provided format.
+In summary, the `CombineStrings` class is a simple class designed to combine two input strings using a format string that is specified by the user. It is a useful tool in data manipulation tasks where there is a need to combine strings in a specific format.
