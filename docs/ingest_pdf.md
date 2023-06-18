@@ -1,31 +1,38 @@
-# IngestPDF
+# IngestPDF Operator Documentation
 
-The **IngestPDF** class is an extension of the `BaseOperator` and focuses on ingesting PDF files either through a direct upload, a URL or from your local storage. It extracts the content from the PDF and provides output as plain text.
+## Summary
 
-## Key Methods
-
-- `declare_name()`: declares the name of the operator as 'Ingest PDF'
-- `declare_category()`: sets the operator's category to 'CONSUME_DATA.value'
-- `declare_allow_batch()`: returns `True` if batch processing is allowed
-- `declare_parameters()`: defines and returns the required parameters such as 'pdf_uri', 'uploaded_file_name'
-- `declare_inputs()`: defines the optional inputs such as 'file_name'
-- `declare_outputs()`: defines the output key 'pdf_content' which is the extracted text from the PDF
-- `run_step(step, ai_context)`: main function that extracts the content from the given PDF file
-- `ingest(pdf_uri, file_name, uploaded_file_name, ai_context)`: ingests a PDF file from either direct upload, URL or from the local storage
-- `is_url(pdf_uri)`: checks if the provided `pdf_uri` parameter is a valid URL
-- `load_pdf_from_uri(url)`: loads the content of the PDF from a URL
-- `load_pdf_from_storage(file_name, generated_this_run, ai_context)`: loads the content of the PDF from your local storage (either generated this run or not)
-- `read_pdf(pdf)`: reads the content of the PDF and returns it as plain text
-
-## Parameters
-
-- `pdf_uri`: string, URL of the PDF file (optional)
-- `uploaded_file_name`: string, the name of the PDF file previously uploaded to the workspace (optional)
+The IngestPDF operator is an AI operator that takes a PDF as input, either as a URI or a user-uploaded file, and converts it into a text blob.
 
 ## Inputs
 
-- `file_name`: string, the name of the PDF file provided as input (optional)
+- `pdf_uri`: A string that contains the URL of the PDF (optional)
+- `uploaded_file_name`: A string that contains the name of the uploaded PDF file (optional)
+
+## Parameters
+
+- `pdf_uri`: A string that indicates the URL of the PDF (placeholder: "Enter the URL of the PDF")
+- `uploaded_file_name`: A string that indicates the name of the uploaded PDF file (placeholder: "Enter the name.pdf of the uploaded PDF")
+- (Commented out) `pdf_parsing_method`: A string that indicates the method of parsing PDF, with a default value of "tabula" for preservation of tables and spreadsheets
 
 ## Outputs
 
-- `pdf_content`: string, the extracted text from the PDF
+- `pdf_content`: A string that is a blob of text representing the content of the input PDF
+
+## Functionality
+
+The operator's main function is `run_step`, which takes the following arguments:
+
+- `step`: The step defined in the AI workflow
+- `ai_context`: An instance of the AiContext class, which helps the operator manage inputs, outputs, and other information
+
+The `ingest` helper function is responsible for loading the PDF either from given URL (`pdf_uri`) or from the workspace's storage where it was uploaded by the user (`uploaded_file_name`). The content from the URL or uploaded PDF file is then scraped, with appropriate log messages being added.
+
+The following helper functions are there to perform specific tasks:
+
+- `is_url`: Determines if the given string is a URI and returns a boolean value
+- `load_pdf_from_uri`: Takes a URL and returns a PDF file from it
+- `load_pdf_from_storage`: Loads a PDF file from the storage, either with a given run_id (if generated during this AI run) or without one
+- `read_pdf`: Reads the content of the input PDF and converts it into a string using tabula Python library to preserve tables and spreadsheets formatting
+
+When the PDF content has been processed, the output `pdf_content` is set, and the operator returns the blob of text.
