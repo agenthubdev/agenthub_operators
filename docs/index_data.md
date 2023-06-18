@@ -1,27 +1,11 @@
 # IndexData
 
-**Index Data** is a class that extends the `BaseOperator` and is responsible for indexing the input text into chunk embeddings. This can be useful when dealing with large texts and requiring efficient operations on text data.
+**IndexData** is a class that is responsible for indexing input text data. It takes in a text string as an input, splits it into chunks of a set token length (1000 in this case), and creates an embedding vector for each chunk. The class outputs a dictionary with the embedding vectors as keys and the corresponding text chunks as values.
 
-The main function of this class is `run_step`, which takes the input text, cleans it, and generates the vector index by generating embeddings for chunks of the text. The class also includes helper methods to clean text, create batches, and generate chunks for processing.
+The `run_step` method of IndexData takes in a `text` input and processes it by removing all newline characters. The `clean_text` method performs this cleaning task.
 
-## Parameters
+The `len_safe_get_embedding` method of IndexData is responsible for generating the embedding vectors for each chunk of text, and storing the embeddings in a dictionary along with the corresponding chunk. The chunks of text are created by calling the `chunked_tokens` method, which chunks the input text into pieces of a set token length using the `batched` method to batch the tokens and the `decode` method to decode the resulting chunks. The `embed_text` method is then used to generate the embedding vectors for each chunk.
 
-The `IndexData` class does not require any parameters.
+The inputs for this class are a `text` input, which is a string of text to be indexed, and there are no parameters. The output is a dictionary named `vector_index`, with the embedding vectors as keys and the corresponding text chunks as values.
 
-## Inputs
-
-- `text`: A string that represents the text to be processed and indexed.
-
-## Outputs
-
-- `vector_index`: A dictionary containing the vector index of the text, where each key is a string representation of the embedding vector, and the value is the corresponding chunk of text.
-
-## Helper Methods
-
-- `clean_text(self, text)`: Removes newline characters from the input text and returns the cleaned text.
-
-- `batched(self, iterable, n)`: Yields batches of size `n` from an iterable.
-
-- `chunked_tokens(self, text, encoding_name, chunk_length)`: Yields chunks of size `chunk_length` for a given input text and encoding_name. This method uses the `batched()` method to create chunks and the `tiktoken` library to handle the encoding.
-
-- `len_safe_get_embedding(self, text, ai_context, max_tokens=EMBEDDING_CTX_LENGTH, encoding_name=EMBEDDING_ENCODING)`: Generates chunk embeddings for the input text. It divides the input text into chunks by calling the `chunked_tokens()` method, gets the embeddings for each chunk using the `ai_context.embed_text()` method, and creates a dictionary with tuple(embedding) as keys and the corresponding chunks as values.
+In summary, IndexData is a class that takes in an input text data and generates embedding vectors for each chunk of text, which are then stored in a dictionary for indexing purposes.
