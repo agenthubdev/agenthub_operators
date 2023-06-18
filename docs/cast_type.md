@@ -1,29 +1,34 @@
-### **CastType**
+# Documentation
 
-The `CastType` class is a `BaseOperator` that changes the format of a given input data into the specified output data type. Its main goal is to convert the input data to either a list or a string, ensuring the format best fits the requested output type. The structure and comments in the code will help you understand the functionality of the class and serve as a guide to its usage.
+## Summary
 
-**Inputs:**
+The CastType operator is used for casting the input data to a specific output type, providing functionality to manipulate different data types within the AI context.
 
-- `input`: An input of any data type.
+## Inputs
 
-**Parameters:**
+- **input**: The input parameter is a data of any type that will be subject to type casting based on the defined output type.
 
-- `output_type`: The desired output type. It can be either "string" or "string[]".
+## Parameters
 
-**Outputs:**
+- **output_type**: The output_type parameter is an enumeration of possible types (string, string[]) to which the input data will be cast.
 
-- `output`: The converted data output of any data type.
+## Outputs
 
-#### Helper method: *best_effort_string_to_list(self, s)*
+- **output**: The output parameter is the result of casting the input data to the specified output_type. The output datatype will be of the specified output_type.
 
-This method takes a string `s` as input and, to the best of its ability, converts it to a list. First, it tries to decode the string as a JSON object. If successful, it returns the resulting object wrapped in a list (if it's a dictionary) or the decoded list itself (if the JSON object is already a list). If decoding the JSON fails, it splits the string by commas and returns a list containing the separated items.
+## Functionality
 
-**Functionality**
-To achieve its goal, the `run_step` method does the following:
+The CastType operator provides functionality to cast input data into a specific output type. It handles various input types (Document[], string) and output types (string, [] or string[]).
 
-1. Fetches the input and its data type, and the specified output type.
-2. Checks if the input type is "Document[]" and if the output type is "string". If true, it joins the page_content of each document and sets the output to the resulting string.
-3. If the input type is "string" and the output type is either "[]" or "string[]", the `best_effort_string_to_list` method is called to convert the string into a list and the result is set as the output.
-4. If none of the above conditions are met, an error is raised indicating that the code cannot cast the input to the specified output type.
+### run_step
 
-By following this process, the `CastType` class provides a simple way to convert a given input data type into the desired output data type.
+The run_step function first retrieves the input and input_type from the ai_context, as well as the output_type specified by the user/step. Depending on the input and output types, it may perform the following:
+
+- For input_type "Document[]" and output_type "string", it will join the content of all documents in the input list into a single string.
+- For input_type "string" and output_type "[]" or "string[]", it will convert the input string into a list best_effort_string_to_list function.
+
+If there is no known way to cast the input_type to the desired output_type, it raises a TypeError.
+
+### best_effort_string_to_list
+
+The best_effort_string_to_list function attempts to convert the given string into a list. It first tries using json.loads(), and if successful, checks if the result is either a dictionary or a list. If the result is a dictionary, it will wrap the dictionary in a list. If json.loads() fails, the function will split the string by comma and return a list of stripped items.
