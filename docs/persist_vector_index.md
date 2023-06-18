@@ -1,20 +1,11 @@
-### PersistVectorIndex
-The **PersistVectorIndex** class is an operator that helps to manage, manipulate, and store vector index dictionaries in the given AI context. It has the following components:
+# **Persist Vector Index**
 
-#### _Static Methods_
-- `declare_name()`: Returns the string 'Persist Vector Index'.
-- `declare_category()`: Returns the operator category 'MANIPULATE_DATA'.
-- `declare_parameters()`: Returns a list of dictionaries that describe the parameters for this operator. In this case, the optional parameter 'index_id' with data type "string" is declared.
-- `declare_inputs()`: Returns a list of dictionaries that describe the input data the operator takes. In this case, the operator takes the input 'vector_index' with data type "{}", which is a dictionary without any specific key-value constraints.
-- `declare_outputs()`: Returns a list of dictionaries that describe the output data the operator provides. In this case, the operator provides the output 'index_id' with data type "string".
+This class is a sub-class of BaseOperator that manipulates data by persisting a vector index. Its purpose is to publish a vector index to a database and return a unique identifier for this newly created index. This unique identifier can be used by a ChatBot operator to create and run a chat bot. 
 
-#### _Main_ _Method_
-- `run_step(step, ai_context: AiContext)`: The main method responsible for running the operator and performing the required actions. It takes a 'step' and an 'ai_context' object as input arguments. A step represents one occurrence of a given operator. The ai_context object provides the necessary context for the operator to access input data and store output data. It performs the following actions:
+The *declare_name()* method returns the name of the operator, and the *declare_category()* method returns the category of operator, in this case, MANIPULATE_DATA. The *declare_parameters()* method returns a list of parameters, in this case, a string type named "index_id" that is optional. 
 
-    - Get the 'index_id' from the parameters if provided.
-    - Retrieve the 'vector_index' input from the AI context using the 'get_input' method.
-    - Use the 'publish_vector_index' method to store the 'vector_index' in the AI context, with the 'vi_uuid' (fetched UUID) as an optional argument.
-    - Set the output 'index_id' in the AI context using the 'vi_uuid'.
-    - Add a log entry describing the Vector index creation and usage.
+The *declare_inputs()* method returns a dictionary with only one input called "vector_index", with a data type of dictionary (*{}*). The *declare_outputs()* method returns a list containing only one output called "index_id" with a data type of string.
 
-The **PersistVectorIndex** class is particularly useful for building AI applications that require the management of vector indices, such as creating chatbot applications that utilize these indices for generating user-specific conversation history.
+The *run_step()* method is the main method responsible for handling the operator functionality. It retrieves the optional index_id parameter, as well as the vector_index input from previous operators. It passes both of these inputs as parameters to the *publish_vector_index()* method of the AiContext object, which is responsible for persisting the vector index in a database and returning the unique identifier. After getting the unique identifier, it sets this as an output called "index_id" and adds a log message.
+
+Overall, the Persist Vector Index class provides a simple solution for persisting vector indexes as well as retrieving a unique identifier for the newly saved index. This unique identifier can then be used to create and run chat bots that query this index.
