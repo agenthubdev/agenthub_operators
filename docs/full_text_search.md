@@ -1,26 +1,31 @@
 # Full Text Search Operator
 
 ## Summary
-This operator performs a full text search on the input text and returns the most relevant windows based on the given query.
+The Full Text Search operator scans text input in a sliding window fashion and returns up to 'nresults' windows that are most relevant to 'query' input/parameter.
 
 ## Inputs
-- `text`: The input text to be searched. DataType: string.
-- `query`: The query to search for in the text. DataType: string. Optional.
+* `text` (string): Input text for searching.
+* `query` (string, optional): Query string used for search.
 
 ## Parameters
-- `nresults`: Maximum number of search results. Default value: 5. DataType: integer.
-- `window_size`: Search window size in words. Default value: 20. DataType: integer.
-- `query`: The query to search for in the text. DataType: string.
-- `multiline`: Determines whether to allow windows to span multiple lines. DataType: boolean.
+* `nresults` (integer, optional, default=5): Maximum number of search results to return.
+* `window_size` (integer, optional, default=20): Search window size in words.
+* `query` (string): Query string used for search.
+* `multiline` (boolean, optional): Whether to allow windows span multiple lines.
 
 ## Outputs
-- `search_result`: The search result, containing text snippets that are most relevant to the query. DataType: string.
-- `search_results_metadata`: Metadata about the search results. DataType: {}[].
+* `search_result` (string): Output string containing the search results.
+* `search_results_metadata` (list): Output list containing search results metadata.
 
 ## Functionality
-The main function, `run_step`, is responsible for performing the full text search. It takes in the input parameters and text and uses the `nlp` object from the imported `spaCy` library. This function does a sliding window search on the input text and calculates a relevance score for each window based on the frequency and score of matching query tokens in the window. The sliding window search takes into account the optional parameter `multiline`, which controls whether the search results can span multiple lines or not. The final search result is a combination of the most relevant windows, specified by the `nresults` parameter.
-
-Below are the helper functions used within the `run_step` function:
-- `token_range_to_string`: Given a window of tokens and the text, it converts the token range into a string.
-- `token_match_score`: Given two tokens, this function calculates the score for a token match. It currently returns 1 if both tokens are the same, and 0 if they are different.
-- `token_is_word`: Given a token, this function checks if it is a word token or not, by checking if it's not a punctuation, space, or stop word.
+The `run_step` function implements the Full Text Search algorithm using the following steps:
+1. Get the input parameters and text.
+2. Tokenize the text using the Spacy library.
+3. Create a deque for each token in the query string and initialize the initial token positions to 0.
+4. Traverse the tokenized text using a sliding window approach.
+5. Calculate the relevance scores of the tokens in the query string that match the current sliding window.
+6. Add the current sliding window with its relevance score to a heap.
+7. Repeat steps 4-6 until the entire text has been scanned.
+8. Retrieve the highest scoring sliding windows from the heap.
+9. Merge overlapping sliding windows.
+10. Output the search results and metadata.
