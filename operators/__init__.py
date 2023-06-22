@@ -24,4 +24,5 @@ from .input_operator import InputOperator
 from .output_operator import OutputOperator
 from .vectorize import VectorizeOperator
 from .store_in_db import StoreInDb
+from .store_in_s3 import StoreInS3
 from .text_search_in_db import TextSearchInDb

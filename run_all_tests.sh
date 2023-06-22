@@ -7,5 +7,6 @@ if [ -z "$OPENAI_TOKEN" ]; then
 fi
 
 pip install -r ./requirements.txt
+python -m spacy download en_core_web_sm
 
 python -m unittest discover

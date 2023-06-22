@@ -11,3 +11,10 @@ langchain
 pymupdf
 requests
 tabula-py
+tiktoken
+shortuuid
+spacy
+google-api-python-client
+google-cloud-storage
+botocore
+boto3
