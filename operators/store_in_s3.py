@@ -1,4 +1,5 @@
 import os
+import json
 import boto3
 import requests
 from urllib.parse import urlparse
@@ -98,11 +99,7 @@ class StoreInS3(BaseOperator):
         ai_context: AiContext
     ):
         # Get AWS credentials
-        aws_credentials = {
-            'aws_access_key_id': ai_context.get_secret('aws_access_key_id'),
-            'aws_secret_access_key': ai_context.get_secret('aws_secret_access_key'),
-            'aws_region_name': ai_context.get_secret('aws_region_name')
-        }
+        aws_credentials = json.loads(ai_context.get_secret('aws_credentials'))
 
         # Parse inputs
         file_url = ai_context.get_input('file_url', self)
