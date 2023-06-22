@@ -25,16 +25,20 @@ class StoreInS3(BaseOperator):
             {
                 "name": "file_name",
                 "data_type": "string",
-                "placeholder": "File name (object key) that will be stored in S3",
+                "placeholder": "example.pdf",
+                "description": "File name (object key) that will be stored in S3, include the file extension if necessary",
+
             },
             {
                 "name": "s3_bucket",
                 "data_type": "string",
-                "placeholder": "S3 bucket name",
+                "placeholder": "example-s3-bucket-name",
+                "description": "S3 bucket name",
             },            
             {
                 "name": "overwrite",
-                "data_type": "boolean"
+                "data_type": "boolean",
+                "description": "By default if a file with the same key exists, it will not be overwritten. Check this box to overwrite."
             }
         ]
     
