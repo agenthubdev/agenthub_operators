@@ -77,7 +77,7 @@ class StoreInDb(BaseOperator):
         if p['split_by'] == 'line':
             chunks = text.splitlines()
         elif p['split_by'] == 'chunk':
-            chunks = StoreInDatabase.split_text_into_chunks(text, p['chunk_size_words'])
+            chunks = StoreInDb.split_text_into_chunks(text, p['chunk_size_words'])
         else:
             raise ValueError(f"Don't know what to do with value {p['split_by']} of parameter 'split_by'")
         
