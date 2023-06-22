@@ -1,6 +1,6 @@
 <p align="center">
 <br><br>
-<a "https://agenthub.dev/"><img src="https://cdn.discordapp.com/attachments/1095427515717267658/1108119925731627129/transparent.png" width="150px"></a>
+<a "https://agenthub.dev/"><img src="https://cdn.discordapp.com/attachments/1121495367444332605/1121495431545880586/robot_1f916.png" width="150px"></a>
 </p>
 
 <div align="center">
