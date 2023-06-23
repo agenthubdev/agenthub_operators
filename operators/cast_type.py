@@ -60,7 +60,14 @@ class CastType(BaseOperator):
                 return
         elif input_type == 'string':
             if output_type in ['[]', 'string[]']:
-                ai_context.set_output('output', self.best_effort_string_to_list(input), self)
+                if output_type == '[]':
+                    ai_context.set_output('output', [input], self)
+                else:
+                    ai_context.set_output('output', self.best_effort_string_to_list(input), self)
+                return
+        elif input_type == 'string[]':
+            if output_type == 'string':
+                ai_context.set_output('output', ", ".join(input), self)
                 return
             
 
