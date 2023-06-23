@@ -33,6 +33,17 @@ class InputOperator(BaseOperator):
                 "description": "Named input for the pipeline, can be used to invoke the pipeline with specified input values.",
             },
             {
+                "name": "show_as_user_input",
+                "data_type": "boolean",
+                "description": "Do you want to prompt the end user to fill this field.",
+            },
+            {
+                "name": "input_type",
+                "data_type": "enum(text,number)",
+                "description": "Type of the input value.",
+                "condition": "show_as_user_input == true"
+            },
+            {
                 "name": "store_log",
                 "data_type": "boolean",
                 "description": "Whether you want to keep track of all the inputs that this pipeline was run with. Makes more sense when building interactive agents and less so for one off experiments."
