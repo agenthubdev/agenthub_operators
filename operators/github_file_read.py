@@ -12,16 +12,16 @@ class GitHubFileReader(BaseOperator):
     @staticmethod
     def declare_name():
         return 'Read files from GitHub'
-    
+
     @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.CONSUME_DATA.value
-    
-    @staticmethod    
+
+    @staticmethod
     def declare_parameters():
         return [
             {
-                "name": "repo_name", 
+                "name": "repo_name",
                 "data_type": "string",
                 "placeholder": "user_name/repository_name"
             },
@@ -42,12 +42,12 @@ class GitHubFileReader(BaseOperator):
                 "placeholder": "Enter the branch (default is main)"
             }
         ]
-    
-    @staticmethod    
+
+    @staticmethod
     def declare_inputs():
         return []
-    
-    @staticmethod    
+
+    @staticmethod
     def declare_outputs():
         return [
             {
@@ -57,18 +57,17 @@ class GitHubFileReader(BaseOperator):
             {
                 "name": "file_contents",
                 "data_type": "string[]",
+            },
+            {
+                "name": "file_name_contents",
+                "data_type": "string[]",
             }
         ]
 
-    def run_step(
-        self, 
-        step, 
-        ai_context : AiContext
-    ):
+    def run_step(self, step, ai_context: AiContext):
         params = step['parameters']
         self.read_github_files(params, ai_context)
-            
-            
+
     def read_github_files(self, params, ai_context):
         repo_name = params['repo_name']
         folders = params.get('folders').replace(" ", "").split(',')
@@ -80,6 +79,7 @@ class GitHubFileReader(BaseOperator):
 
         file_names = []
         file_contents = []
+        file_name_contents = []
 
         def file_matches_regex(file_path, file_regex):
             if not file_regex:
@@ -100,6 +100,7 @@ class GitHubFileReader(BaseOperator):
                         file_content = item.decoded_content.decode('utf-8')
                         file_names.append(item.path)
                         file_contents.append(file_content)
+                        file_name_contents.append(item.path + '\n' + file_content)
 
                     elif item.type == "dir":
                         queue.append(item.path)
@@ -111,4 +112,5 @@ class GitHubFileReader(BaseOperator):
 
         ai_context.set_output('file_names', file_names, self)
         ai_context.set_output('file_contents', file_contents, self)
+        ai_context.set_output('file_name_contents', file_name_contents, self)
         return True
