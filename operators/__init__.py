@@ -24,6 +24,6 @@ from .encode_url import EncodeURL
 from .input_operator import InputOperator
 from .output_operator import OutputOperator
 from .vectorize import VectorizeOperator
-from .store_in_db import StoreInDb
+from .archive_text import StoreInDb
 from .store_in_s3 import StoreInS3
-from .text_search_in_db import TextSearchInDb
+from .text_search_in_archive import TextSearchInDb

@@ -5,10 +5,10 @@ from .base_operator import BaseOperator
 from ai_context import AiContext
 
 
-class TextSearchInDb(BaseOperator):
+class TextSearchInArchive(BaseOperator):
     @staticmethod
     def declare_name():
-        return 'Text search in DB'
+        return 'Text Search in Archive'
     
     @staticmethod
     def declare_category():

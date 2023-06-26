@@ -5,10 +5,10 @@ from .base_operator import BaseOperator
 from ai_context import AiContext
 
 
-class StoreInDb(BaseOperator):
+class ArchiveText(BaseOperator):
     @staticmethod
     def declare_name():
-        return 'Store in DB'
+        return 'Archive Text'
     
     @staticmethod
     def declare_category():
@@ -77,7 +77,7 @@ class StoreInDb(BaseOperator):
         if p['split_by'] == 'line':
             chunks = text.splitlines()
         elif p['split_by'] == 'chunk':
-            chunks = StoreInDb.split_text_into_chunks(text, p['chunk_size_words'])
+            chunks = ArchiveText.split_text_into_chunks(text, p['chunk_size_words'])
         else:
             raise ValueError(f"Don't know what to do with value {p['split_by']} of parameter 'split_by'")
         
