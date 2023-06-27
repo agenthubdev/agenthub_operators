@@ -5,6 +5,7 @@ import numpy as np
 def get_max_tokens_for_model(model_name: str) -> int:
     token_limits = {
         "gpt-3.5-turbo": 4096,
+        "gpt-3.5-turbo-16k": 16384,
         "gpt-4": 8192,
         "gpt-4-32k": 32768,
     }

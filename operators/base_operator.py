@@ -46,7 +46,7 @@ class BaseOperator:
         if cls.declare_category() == BaseOperator.OperatorCategory.AI.value:
             return [{
                 "name": "model_preference",
-                "data_type": "enum(gpt-4,gpt-3.5-turbo)",
+                "data_type": "enum(gpt-4,gpt-3.5-turbo,gpt-3.5-turbo-16k)",
                 "placeholder": ""
             }]
         else:
