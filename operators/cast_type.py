@@ -62,7 +62,10 @@ class CastType(BaseOperator):
             if output_type in ['[]', 'string[]']:
                 ai_context.set_output('output', self.best_effort_string_to_list(input), self)
                 return
-            
+        elif input_type == 'string[]':
+            if output_type == 'string':
+                ai_context.set_output('output', ','.join(input), self)
+                return
 
         raise TypeError(f'Dont know how to cast {input_type} to {output_type}')
           
