@@ -82,6 +82,7 @@ class IngestData(BaseOperator):
                 ai_context.add_to_log(f"Content from PDF at {data_uri} has been scraped.")
             else:
                 text = self.scrape_text(data_uri)
+                ai_context.storage['ingested_url'] = data_uri
                 ai_context.add_to_log(f"Content from {data_uri} has been scraped.")
             ai_context.set_output('data', text, self)
         else:
