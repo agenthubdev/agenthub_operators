@@ -33,13 +33,18 @@ class DefineOpenAiFunction(BaseOperator):
                     {
                         "name": "name",
                         "data_type": "string",
-                        "description": "This should be the name of your function argument",
+                        "description": "This should be the name of your function argument (ex: 'location')",
                     },
                     {
                         "name": "type",
                         "data_type": "string",
-                        "placeholder": ""
-                    }
+                        "placeholder": "This should be the type of your function argument (ex: 'string')",
+                    },
+                    {
+                        "name": "description",
+                        "data_type": "string",
+                        "placeholder": "This should be the description of your function argument (ex: 'The city and state, e.g. San Francisco, CA')",
+                    }     
                 ]
             }
         ]
