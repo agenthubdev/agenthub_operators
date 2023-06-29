@@ -51,7 +51,7 @@ class IngestData(BaseOperator):
     def declare_outputs():
         return [
             {
-                "name": "uri_content",
+                "name": "data",
                 "data_type": "string",
             }
         ]
@@ -74,6 +74,7 @@ class IngestData(BaseOperator):
             file_data = self.load_pdf_from_storage(uploaded_file_name, generated_this_run, ai_context)
             text = self.read_pdf(file_data)
             ai_context.add_to_log(f"Content from uploaded file {uploaded_file_name} has been scraped.")
+            ai_context.set_output('data', text, self)
         elif data_uri and self.is_url(data_uri):
             if data_uri.lower().endswith(".pdf"):
                 file_data = self.load_pdf_from_uri(data_uri)
@@ -82,9 +83,9 @@ class IngestData(BaseOperator):
             else:
                 text = self.scrape_text(data_uri)
                 ai_context.add_to_log(f"Content from {data_uri} has been scraped.")
-            ai_context.set_output('uri_content', text, self)
+            ai_context.set_output('data', text, self)
         else:
-            ai_context.set_output('uri_content', '', self)
+            ai_context.set_output('data', '', self)
             ai_context.add_to_log("No file or URL to read.")
 
     def is_url(self, data_uri):
