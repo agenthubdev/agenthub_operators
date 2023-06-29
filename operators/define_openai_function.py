@@ -27,9 +27,20 @@ class DefineOpenAiFunction(BaseOperator):
                 "placeholder": "Describe your function's purpose for the model to understand"
             },
             {
-                "name": "function_body",
-                "data_type": "string",
-                "placeholder": "Provide a valid json to denote your function params"
+                "name": "parameters",
+                "data_type": "object[]",
+                "structure": [
+                    {
+                        "name": "name",
+                        "data_type": "string",
+                        "description": "This should be the name of your function argument",
+                    },
+                    {
+                        "name": "type",
+                        "data_type": "string",
+                        "placeholder": ""
+                    }
+                ]
             }
         ]
 
@@ -59,5 +70,5 @@ class DefineOpenAiFunction(BaseOperator):
             ai_context.add_to_log(f"Your function json: {function_json}")
             ai_context.set_output('function_json', function_json, self)
         except json.JSONDecodeError as e:
-            ai_context.add_to_log(f"Failed to parse function body or create valid JSON. Error: {str(e)}", color='red')
-            
+            ai_context.add_to_log(
+                f"Failed to parse function body or create valid JSON. Error: {str(e)}", color='red')
