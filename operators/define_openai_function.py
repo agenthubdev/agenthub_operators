@@ -30,10 +30,11 @@ class DefineOpenAiFunction(BaseOperator):
                 "name": "parameters",
                 "data_type": "object[]",
                 "structure": [
+                    # TODO: Add descriptions
                     {
                         "name": "name",
                         "data_type": "string",
-                        "description": "Parameter name (ex: 'location')",
+                        "placeholder": "Parameter name (ex: 'location')",
                     },
                     {
                         "name": "type",
