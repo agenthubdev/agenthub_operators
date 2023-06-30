@@ -59,16 +59,22 @@ class DefineOpenAiFunction(BaseOperator):
         ]
 
     def run_step(self, step, ai_context: AiContext):
-        function_name = step['parameters'].get('name')
-        description = step['parameters'].get('description')
+        params = step['parameters']
+        function_name = params.get('name')
+        description = params.get('description')
         # Parameter structures contains parameters in threes
         # Ex. first three elements of parameter_structures would be the name, type, and description for one parameter
-        parameter_structures = step['parameters'].get('parameters')
+        parameter_structures = params.get('parameters')
 
         # Separate individual parameters attributes (segment into 2D array, where each array contains name, type, description)
+        #TODO: move this to the platform side to simplify making new operators with object[] parameters
         parameters = [parameter_structures[i:i + 3]
                       for i in range(0, len(parameter_structures), 3)]
+        
+        self.build_openai_function_json(function_name, description, parameters, ai_context)
 
+
+    def build_openai_function_json(self, function_name, description, parameters, ai_context):
         # Properties dictionary is what holds the actual parameter information
         properties = {}
 
