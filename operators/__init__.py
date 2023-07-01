@@ -12,6 +12,7 @@ from .ingest_docs import IngestDocs
 from .hybrid_search import HybridSearch
 from .summarize import Summarize
 from .tweet import Tweet
+from .wordpress_poster import WordpressPoster
 from .hacker_news import ScrapeHackerNews
 from .find_best_post import FindBestPost
 from .gmail_sender import GmailSender
