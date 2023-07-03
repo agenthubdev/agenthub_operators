@@ -3,6 +3,7 @@ import io
 
 from bs4 import BeautifulSoup
 import tabula
+from PyPDF2 import PdfReader
 import pandas as pd
 
 from ai_context import AiContext
@@ -124,6 +125,15 @@ class IngestData(BaseOperator):
         pd.set_option('display.max_colwidth', None)
         pdf_content = io.BytesIO(pdf)
         df_list = tabula.read_pdf(pdf_content, pages='all')
-        pdf_content = "\n".join(df.to_string(index=False) for df in df_list)
         
+        # If tabula returned empty DataFrames, fall back to PyPDF2
+        if all(df.empty for df in df_list):
+            pdf_reader = PdfReader(pdf_content)
+            text = []
+            for page_num in range(len(pdf_reader.pages)):
+                page = pdf_reader.pages[page_num]
+                text.append(page.extract_text())
+            return "\n".join(text)
+        
+        pdf_content = "\n".join(df.to_string(index=False) for df in df_list)
         return pdf_content

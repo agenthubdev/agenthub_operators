@@ -11,6 +11,7 @@ langchain
 pymupdf
 requests
 tabula-py
+PyPDF2
 tiktoken
 shortuuid
 spacy
