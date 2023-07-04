@@ -93,5 +93,8 @@ class AskChatGpt(BaseOperator):
         else:
             ai_response = ai_context.run_chat_completion(prompt=question)
         
+        # Convert the AI response to string.
+        ai_response = str(ai_response)
+
         ai_context.set_output('chatgpt_response', ai_response, self)
         ai_context.add_to_log(f'Response from ChatGPT: {ai_response}', save=True)
