@@ -93,8 +93,24 @@ class AskChatGpt(BaseOperator):
         else:
             ai_response = ai_context.run_chat_completion(prompt=question)
         
-        # Convert the AI response to string.
         ai_response = str(ai_response)
+        
+        if function:
+            ai_response = self.function_response_to_json(ai_response)
 
         ai_context.set_output('chatgpt_response', ai_response, self)
         ai_context.add_to_log(f'Response from ChatGPT: {ai_response}', save=True)
+
+    def function_response_to_json(self, response):
+        try:
+            json_dict = json.loads(response)
+            # If the "arguments" field in the response is a stringified JSON, parse it into a dictionary as well
+            if "arguments" in json_dict and isinstance(json_dict["arguments"], str):
+                json_dict["arguments"] = json.loads(json_dict["arguments"])
+
+            # Convert the processed dictionary back into a JSON-like string
+            valid_json_str = json.dumps(json_dict)
+            return valid_json_str
+
+        except Exception as e:
+            return response
