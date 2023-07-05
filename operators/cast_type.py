@@ -21,6 +21,12 @@ class CastType(BaseOperator):
                 "name": "output_type",
                 "data_type": "enum(string,string[])",
                 "placeholder": "Output type to cast to."
+            },
+            {
+                "name": "is_comma_separated",
+                "data_type": "boolean",
+                "description": "Do you want to split the input string by commas?",
+                "condition": "output_type == string[]"
             }
         ]
     
@@ -49,7 +55,9 @@ class CastType(BaseOperator):
     ):
         input = ai_context.get_input('input', self)  # >_<
         input_type = ai_context.get_input_type('input', self)
-        output_type = step['parameters'].get('output_type')
+        params = step['parameters']
+        output_type = params.get('output_type')
+        is_comma_separated = params.get('is_comma_separated', 'false').lower() == 'true'
         if input_type == "Document[]":
             if output_type == 'string':
                 # Document schema from langchain for reference: 
@@ -60,7 +68,7 @@ class CastType(BaseOperator):
                 return
         elif input_type == 'string':
             if output_type in ['[]', 'string[]']:
-                ai_context.set_output('output', self.best_effort_string_to_list(input), self)
+                ai_context.set_output('output', self.best_effort_string_to_list(input, is_comma_separated), self)
                 return
         elif input_type == 'string[]':
             if output_type == 'string':
@@ -70,7 +78,7 @@ class CastType(BaseOperator):
         raise TypeError(f'Dont know how to cast {input_type} to {output_type}')
           
             
-    def best_effort_string_to_list(self, s):
+    def best_effort_string_to_list(self, s, is_comma_separated):
         try:
             result = json.loads(s)
             if isinstance(result, dict):
@@ -79,8 +87,9 @@ class CastType(BaseOperator):
                 return result
         except json.JSONDecodeError:
             pass
+        
+        if not is_comma_separated:
+            return [s]
 
         result = s.split(',')
         return [item.strip() for item in result]
-        
-
