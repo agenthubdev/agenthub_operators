@@ -64,40 +64,58 @@ class DefineOpenAiFunction(BaseOperator):
         function_name = params.get('name')
         description = params.get('description')
         # Parameter structures contains parameters in threes
-        # Ex. first three elements of parameter_structures would be the name, type, and description for one parameter
+        # Ex. [{'name-0-0': 'location'}, {'type-0-1': 'string'}, {'description-0-2': 'The city and state, e.g. San Francisco, CA.'},
+        #      {'name-1-0': 'unit'}, {'type-1-1': 'string'}, {'description-1-2': 'This is the unit of temperature, inferred from the location/city'}]
         parameter_structures = params.get('parameters')
 
         # Separate individual parameters attributes (segment into 2D array, where each array contains name, type, description)
-        #TODO: move this to the platform side to simplify making new operators with object[] parameters
-        parameters = [parameter_structures[i:i + 3]
-                      for i in range(0, len(parameter_structures), 3)]
-        
-        self.build_openai_function_json(function_name, description, parameters, ai_context)
+        # TODO: move this to the platform side to simplify making new operators with object[] parameters
+        parameters_dict = self.parse_parameter_structures(parameter_structures)
+        # Use the segmented array of parameters to build the function JSON
+        self.build_openai_function_json(
+            function_name, description, parameters_dict, ai_context)
 
+    def parse_parameter_structures(self, parameter_structures):
+        parameters_dict = {}
 
-    def build_openai_function_json(self, function_name, description, parameters, ai_context):
+        for parameter in parameter_structures:
+            # Each item is a dictionary with one entry, iterate over this entry
+            for attribute, value in parameter.items():
+                # Split the key by the "-" character
+                # This separates the attribute name (name, type, or description) and the parameter index
+                indexed_attribute = attribute.split("-")
+                param_index = indexed_attribute[1]
+                param_attribute = indexed_attribute[0]
+
+                if param_index not in parameters_dict:
+                    parameters_dict[param_index] = {}
+
+                # Add the attribute to the dictionary for this parameter index
+                parameters_dict[param_index][param_attribute] = value
+
+        return parameters_dict
+
+    def build_openai_function_json(self, function_name, description, parameters_dict, ai_context):
         # Properties dictionary is what holds the actual parameter information
         properties = {}
-
         parameter_names = []
 
-        for parameter in parameters:
-            parameter_name = parameter[0]
-            parameter_type = parameter[1]
-            parameter_desc = parameter[2]
+        # Iterate over the dictionaries in parameters_dict, which are the dictionaries of parameter attributes
+        for parameter in parameters_dict.values():
+            # Get each attribute from the parameter dictionary
+            parameter_name = parameter["name"]
+            parameter_type = parameter["type"]
+            parameter_desc = parameter["description"]
 
-            for _, name in parameter_name.items():
-                properties[name] = {}
-                parameter_names.append(name)
+            # Add these attributes to the properties dictionary
+            properties[parameter_name] = {}
+            properties[parameter_name]["type"] = parameter_type
+            properties[parameter_name]["description"] = parameter_desc
 
-            for _, type in parameter_type.items():
-                properties[name]["type"] = type
-
-            for _, desc in parameter_desc.items():
-                properties[name]["description"] = desc
+            # Add the parameter name to the list of parameter names
+            parameter_names.append(parameter_name)
 
         function_json = {}
-
         function_json["name"] = function_name
         function_json["description"] = description
 
@@ -108,6 +126,6 @@ class DefineOpenAiFunction(BaseOperator):
         function_json["parameters"]["required"] = parameter_names
 
         function_json_str = json.dumps(function_json)
+
         ai_context.add_to_log(f"Your function json: {function_json_str}")
-        ai_context.set_output(
-            'function_json', function_json_str, self)
+        ai_context.set_output('function_json', function_json_str, self)
