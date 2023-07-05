@@ -49,15 +49,22 @@ class ReadJsonValues(BaseOperator):
         values = []
 
         for key in keys:
+            # If key is nested
             if '.' in key:
-                key, rest = key.split('.', 1)
-                if key in json_object and isinstance(json_object[key], list):
-                    for item in json_object[key]:
-                        values.extend(self.get_nested_values(item, [rest]))
-                elif key in json_object:
-                    values.extend(self.get_nested_values(json_object[key], [rest]))
+                nested_keys = key.split('.')
+                temp_json_object = json_object
+
+                # Traverse the json object using the nested keys
+                for nested_key in nested_keys:
+                    if nested_key in temp_json_object:
+                        temp_json_object = temp_json_object[nested_key]
+                
+                # Add the final value to the list
+                values.append(temp_json_object)
+            
+            # If key is not nested
             elif key in json_object:
-                values.append(f'{key}: {json_object[key]}')
+                values.append(json_object[key])
 
         return values
 
