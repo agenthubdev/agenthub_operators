@@ -42,6 +42,18 @@ class GitHubMergeRequester(BaseOperator):
             {
                 "name": "list_of_file_contents",
                 "data_type": "string[]",
+            },
+            {
+                "name": "pr_title",
+                "data_type": "string",
+                "optional": "1",
+                "placeholder": "Title for the Pull Request",
+            },
+            {
+                "name": "pr_description",
+                "data_type": "string",
+                "optional": "1",
+                "placeholder": "Description for the Pull Request",
             }
         ]
     
@@ -57,6 +69,11 @@ class GitHubMergeRequester(BaseOperator):
         params = step['parameters']
         filenames = ai_context.get_input('list_of_filenames', self)
         file_contents = ai_context.get_input('list_of_file_contents', self)
+        
+        default_PR_title = f"PR created by https://agenthub.dev/pipeline?run_id={ai_context.get_run_id()}"
+        default_PR_description = f"PR created by https://agenthub.dev/pipeline?run_id={ai_context.get_run_id()}"
+        pr_title = ai_context.get_input('pr_title', self) or default_PR_title
+        pr_description = ai_context.get_input('pr_description', self) or default_PR_description
 
         g = Github(ai_context.get_secret('github_access_token'))
         repo = g.get_repo(params['repo_name'])
@@ -73,7 +90,6 @@ class GitHubMergeRequester(BaseOperator):
         for i in range(len(filenames)):
             file_path = filenames[i]
             new_file_content = file_contents[i]
-            
             commit_message = f"{file_path} - commit created by {run_url}"
 
             try:
@@ -89,13 +105,9 @@ class GitHubMergeRequester(BaseOperator):
                     # If any other error occurred, raise the exception again
                     raise e
 
-        # Create a pull request to merge the new branch in the forked repository into the original branch
-        pr_title = f"PR created by {run_url}"
-        pr_body = f"PR created by {run_url}"
-
         pr = repo.create_pull(
             title=pr_title, 
-            body=pr_body, 
+            body=pr_description, 
             base=base_branch_name, 
             head=f"{forked_repo.owner.login}:{new_branch_name}"
         )
