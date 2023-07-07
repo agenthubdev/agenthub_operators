@@ -7,19 +7,19 @@ class InputOperator(BaseOperator):
     @staticmethod
     def declare_name():
         return 'Input'
-    
+
     @staticmethod
     def declare_description():
         return """Special type of operator that is used to (1) create a named input for a pipeline and 
         (2) to store history of interactions with pipeline when it implements action of an Agent.
         When testing you can specify 'value' parameter manually for Input operator.
         """
-    
+
     @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.MISC.value
-    
-    @staticmethod    
+
+    @staticmethod
     def declare_parameters():
         return [
             {
@@ -50,23 +50,17 @@ class InputOperator(BaseOperator):
             },
             {
                 "name": "log_visibility",
-                "data_type": "enum(user,team)",
+                "data_type": "enum(user,project)",
                 "description": "When storing the history of inputs for this saved pipeline what level of granularity should the log be stored at.",
                 "condition": "store_log == true"
-            },
-            {
-                "name": "team_name",
-                "data_type": "string",
-                "description": "Team name to store the logs for",
-                "condition": "log_visibility == team"
             }
         ]
-     
-    @staticmethod   
+
+    @staticmethod
     def declare_inputs():
         return []
-    
-    @staticmethod 
+
+    @staticmethod
     def declare_outputs():
         return [
             {
@@ -78,6 +72,3 @@ class InputOperator(BaseOperator):
     def run_step(self, step, ai_context):
         p = step['parameters']
         ai_context.set_output('output', p['value'], self)
-
-        
-        

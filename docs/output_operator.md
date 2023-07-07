@@ -12,8 +12,7 @@ The `OutputOperator` is a special operator used to (1) create a named output of 
 
 - `output_name`: A string parameter to give the pipeline output a name.
 - `store_log`: A boolean parameter, which states if the output should be preserved when making this pipeline an Action of an Agent.
-- `log_visibility`: An enum(user, team) parameter specifying the log's storage level of granularity when storing history of outputs for an Agent.
-- `team_name`: A string parameter representing the team name to store the logs for (only applicable if `log_visibility` is set to "team").
+- `log_visibility`: An enum(user, project) parameter specifying the log's storage level of granularity when storing history of outputs for an Agent.
 
 ## Outputs
 

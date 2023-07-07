@@ -9,12 +9,12 @@ class TextSearchInArchive(BaseOperator):
     @staticmethod
     def declare_name():
         return 'Text Search in Archive'
-    
+
     @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.DB.value
-    
-    @staticmethod    
+
+    @staticmethod
     def declare_parameters():
         return [
             {
@@ -34,21 +34,15 @@ class TextSearchInArchive(BaseOperator):
             },
             {
                 "name": "visibility",
-                "data_type": "enum(team,user,public)",
-            },
-            {
-                "name": "team_name",
-                "data_type": "string",
-                "placeholder": "Team name in case visibility=team above.",
-                "condition": "visibility == team"
+                "data_type": "enum(project,user,public)",
             },
             {
                 "name": "language",
                 "data_type": "enum(english,simple,arabic,armenian,basque,catalan,danish,dutch,finnish,french,german,greek,hindi,hungarian,indonesian,irish,italian,lithuanian,nepali,norwegian,portuguese,romanian,russian,serbian,spanish,swedish,tamil,turkish,yiddish)"
             }
         ]
-    
-    @staticmethod    
+
+    @staticmethod
     def declare_inputs():
         return [
             {
@@ -57,8 +51,8 @@ class TextSearchInArchive(BaseOperator):
                 "optional": "1",
             }
         ]
-    
-    @staticmethod    
+
+    @staticmethod
     def declare_outputs():
         return [
             {
@@ -74,18 +68,14 @@ class TextSearchInArchive(BaseOperator):
     ):
         p = step['parameters']
         query = ai_context.get_input('query', self) or p['query']
-   
+
         r = ai_context.query_chunk_index(
             query,
             p.get('num_results', 10),
             p['table_name'],
             p['visibility'],
-            p.get('team_name'),
             p.get('language', 'english'),
         )
-        
+
         ai_context.set_output('search_results', str(r), self)
         ai_context.add_to_log(f'Found: {r}')
-
-    
-   

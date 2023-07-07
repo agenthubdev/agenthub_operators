@@ -6,21 +6,21 @@ from .base_operator import BaseOperator
 class SleepOperator(BaseOperator):
     @staticmethod
     def declare_visibility():
-        return [('team', 'agenthub')]
+        return [('project', '<insert agenthub project id>')]
 
     @staticmethod
     def declare_description():
         return 'Just sleeps and does nothing useful, we are mostly adding it for testing purposes.'
-    
+
     @staticmethod
     def declare_name():
         return 'Sleep Operator'
-    
+
     @staticmethod
     def declare_category():
         return BaseOperator.OperatorCategory.MISC.value
-    
-    @staticmethod    
+
+    @staticmethod
     def declare_parameters():
         return [
             {
@@ -29,12 +29,12 @@ class SleepOperator(BaseOperator):
                 "placeholder": "How many seconds to sleep for"
             }
         ]
-     
-    @staticmethod   
+
+    @staticmethod
     def declare_inputs():
         return []
-    
-    @staticmethod 
+
+    @staticmethod
     def declare_outputs():
         return []
 
@@ -42,4 +42,3 @@ class SleepOperator(BaseOperator):
         p = step['parameters']
         s = float(p['sleep_seconds'])
         time.sleep(s)
-      
