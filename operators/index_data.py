@@ -26,7 +26,13 @@ class IndexData(BaseOperator):
     
     @staticmethod    
     def declare_parameters():
-        return []
+        return [
+            {
+                "name": "should_cache_embeddings",
+                "data_type": "boolean",
+                "description": "Do you want to cache the embeddings?",
+            }
+        ]
     
     @staticmethod    
     def declare_inputs():
@@ -55,7 +61,8 @@ class IndexData(BaseOperator):
     ):
         text = ai_context.get_input('text', self)
         text = self.clean_text(text)
-        embeddings_dict = self.len_safe_get_embedding(text, ai_context)
+        should_cache_embeddings = step['parameters'].get('should_cache_embeddings', False)
+        embeddings_dict = self.len_safe_get_embedding(text, ai_context, should_cache_embeddings=should_cache_embeddings)
         ai_context.set_output('vector_index', embeddings_dict, self)
         ai_context.add_to_log("Indexing complete with {} chunk embeddings".format(len(embeddings_dict)))
     
@@ -86,11 +93,12 @@ class IndexData(BaseOperator):
         text, 
         ai_context,
         max_tokens=EMBEDDING_CTX_LENGTH, 
-        encoding_name=EMBEDDING_ENCODING
+        encoding_name=EMBEDDING_ENCODING,
+        should_cache_embeddings=False
     ):
         chunk_embeddings = {}
         for chunk in self.chunked_tokens(text, encoding_name=encoding_name, chunk_length=max_tokens):
-            embedding = ai_context.embed_text(chunk)
+            embedding = ai_context.embed_text(chunk, cache_response=should_cache_embeddings)
             embedding_key = tuple(embedding)  # Convert numpy array to tuple
             chunk_embeddings[embedding_key] = chunk
 
