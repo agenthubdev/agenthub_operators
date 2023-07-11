@@ -27,7 +27,7 @@ class WebSearch(BaseOperator):
             {
                 "name": "results_count",
                 "data_type": "integer",
-                "placeholder": "Enter the number of results"
+                "placeholder": "Enter the number of results (default 5)"
             }
         ]
     
@@ -49,14 +49,14 @@ class WebSearch(BaseOperator):
         ]
         
     def run_step(self, step, ai_context):
-        p = self.gen_prompt(step, ai_context)
-        ai_response = ai_context.run_chat_completion(prompt=p)
+        query = step['parameters'].get('query')
+        results_count = step['parameters'].get('results_count')
+        if results_count is None:
+            results_count = 5
+        else:
+            results_count = int(results_count)
         
-        ai_response_str = ai_response.replace('\\', '')
-        
-        ai_context.add_to_log(f'ai_response_str = {ai_response_str}', save=True)
-        
-        google_res = self.google_search(ai_response_str, 5, ai_context)
+        google_res = self.google_search(query, results_count, ai_context)
         snippets, urls = self.get_urls_and_snippets(google_res)
         ai_context.add_to_log(f'Google results:\n urls={urls}\n snippets={snippets}') 
         ai_context.set_output(
@@ -71,24 +71,11 @@ class WebSearch(BaseOperator):
         data = google_res
         titles_and_snippets = []
         links = []
-
-        for item in data['items']:
+        for item in data.get('items', []):
             titles_and_snippets.append(item['title'] + " " + item['snippet'])
             links.append(item['link'])
 
         return titles_and_snippets, links
-    
-
-    def gen_prompt(self, step, ai_context):
-        query_input = ai_context.get_input('query', self)
-        query_parameter = step['parameters'].get('query')
-        q = query_input or query_parameter
-        p = f'''Return google search query which would achieve 
-the goal or answer question. Goal or question:
-{q}'''
-        ai_context.add_to_log(f"LLM prompt:\n{p}")
-        return p
-                  
 
     def google_search(self, query, num_results, ai_context) -> list[str]:
         try:
