@@ -72,8 +72,8 @@ class IngestData(BaseOperator):
     def ingest(self, data_uri, uploaded_file_name, generated_this_run, ai_context):
         if uploaded_file_name:
             ai_context.add_to_log(f"Loading {uploaded_file_name} from storage.")
-            file_data = self.load_pdf_from_storage(uploaded_file_name, generated_this_run, ai_context)
-            text = self.read_pdf(file_data)
+            file_data = self.load_file_from_storage(uploaded_file_name, generated_this_run, ai_context)
+            text = self.read_file(file_data, uploaded_file_name)
             ai_context.add_to_log(f"Content from uploaded file {uploaded_file_name} has been scraped.")
             ai_context.set_output('data', text, self)
         elif data_uri and self.is_url(data_uri):
@@ -89,6 +89,24 @@ class IngestData(BaseOperator):
         else:
             ai_context.set_output('data', '', self)
             ai_context.add_to_log("No file or URL to read.")
+
+    def load_file_from_storage(self, file_name, generated_this_run, ai_context):
+        #If the file is generated this run we store it in the /run_id directory.
+        if generated_this_run:
+            file_data = ai_context.get_file(file_name, ai_context.get_run_id())
+        else:
+            file_data = ai_context.get_file(file_name)
+        return file_data
+
+    def read_file(self, file_data, file_name):
+        if file_name.lower().endswith('.pdf'):
+            return self.read_pdf(file_data)
+        elif file_name.lower().endswith('.json'):
+            return pd.read_json(io.StringIO(file_data.decode())).to_string()
+        elif file_name.lower().endswith('.csv'):
+            return pd.read_csv(io.StringIO(file_data.decode())).to_string()
+        else:
+            raise ValueError(f"Unsupported file format: {file_name}")
 
     def is_url(self, data_uri):
         #TODO: Add a real is_url check into utils.py
@@ -112,14 +130,6 @@ class IngestData(BaseOperator):
         response = requests.get(url)
         response.raise_for_status()  # Ensure we got a valid response
         return response.content
-    
-    def load_pdf_from_storage(self, file_name, generated_this_run, ai_context):
-        #If the file is generated this run we store it in the /run_id directory.
-        if generated_this_run:
-            file_data = ai_context.get_file(file_name, ai_context.get_run_id())
-        else:
-            file_data = ai_context.get_file(file_name)
-        return file_data
     
     def read_pdf(self, pdf):
         pd.set_option('display.max_colwidth', None)
