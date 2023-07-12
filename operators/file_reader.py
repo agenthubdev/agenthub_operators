@@ -24,6 +24,10 @@ class FileReader(BaseOperator):
         return "Reads the content from an uploaded file and returns a string of the file's contents. Supports .pdf, .json, and, .csv filetypes"
 
     @staticmethod
+    def declare_allow_batch():
+        return True
+
+    @staticmethod
     def declare_parameters():
         return [
             {
