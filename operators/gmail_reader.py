@@ -157,7 +157,8 @@ class GmailReader(BaseOperator):
 
             if os.path.exists(file_path):
                 with open(file_path, 'rb') as file:
-                    ai_context.store_file(file, file_name, ai_context.get_run_id())
-                uploaded_files.append(file_name)
+                    stored_file_name = ai_context.store_file(file, file_name)
+                    if stored_file_name:
+                        uploaded_files.append(stored_file_name)
 
         return uploaded_files
