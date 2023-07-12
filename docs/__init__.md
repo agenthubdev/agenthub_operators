@@ -39,7 +39,7 @@ Performs a web search using an external search engine according to the given sea
 
 ### WebsiteScraper
 
-Scrapes the contents from a given urk
+Scrapes the contents from a given url
 
 ### FileReader
 
