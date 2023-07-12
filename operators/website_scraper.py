@@ -20,12 +20,16 @@ class WebsiteScraper(BaseOperator):
         return BaseOperator.OperatorCategory.CONSUME_DATA.value
 
     @staticmethod
+    def declare_description():
+        return "Scrapes the content of a website from the URL. Note: Javascript generated text is not yet supported."
+
+    @staticmethod
     def declare_parameters():
         return [
             {
                 "name": "url",
                 "data_type": "string",
-                "placeholder": "Ex. www.bloomberg.com",
+                "placeholder": "Ex. https://www.agenthub.dev/",
                 "description": "Enter the URL to scrape the content from. Note: Javascript generated text is not yet supported."
             }
         ]
