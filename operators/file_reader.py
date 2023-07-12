@@ -72,8 +72,6 @@ class FileReader(BaseOperator):
 
             text = self.read_file(file_data, uploaded_file_name)
 
-            print("FILE TEXT")
-            print(text)
             ai_context.set_output('file_contents', text, self)
             ai_context.add_to_log(
                 f"Content from uploaded file {uploaded_file_name} has been scraped.")
