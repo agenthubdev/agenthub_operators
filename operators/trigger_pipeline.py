@@ -23,9 +23,15 @@ class TriggerPipeline(BaseOperator):
     def declare_parameters():
         return [
             {
-                "name": "saved_item_id",
+                "name": "pipeline_label",
                 "data_type": "string",
-                "placeholder": "Ex: 14320843921804932",
+                "placeholder": "Ex: Single Article Twitter Pipeline",
+                "description": "Enter the name of the saved pipeline"
+            },
+            {
+                "name": "pipeline_id",
+                "data_type": "string",
+                "placeholder": "Ex: fLgATDMxnXgs2Fgw7jH81E",
                 "description": "Enter the ID of the saved item"
             }
         ]
@@ -51,22 +57,22 @@ class TriggerPipeline(BaseOperator):
 
     def run_step(self, step, ai_context: AiContext):
         params = step['parameters']
-        saved_item_id = params.get('saved_item_id')
+        pipeline_id = params.get('pipeline_id')
         pipeline_input = ai_context.get_input('pipeline_input', self) or ''
 
-        self.trigger(saved_item_id, pipeline_input, ai_context)
+        self.trigger(pipeline_id, pipeline_input, ai_context)
 
-    def trigger(self, saved_item_id, pipeline_input, ai_context):
-        if saved_item_id:
+    def trigger(self, pipeline_id, pipeline_input, ai_context):
+        if pipeline_id:
             ai_context.add_to_log(
-                f"Triggering pipeline with saved item id {saved_item_id}.")
+                f"Triggering pipeline with saved item id {pipeline_id}.")
 
-            output = ai_context.trigger_pipeline(saved_item_id, pipeline_input)
+            output = ai_context.trigger_pipeline(pipeline_id, pipeline_input)
 
             ai_context.set_output('output', output, self)
-            
+
             ai_context.add_to_log(
-                f"Pipeline with saved item id {saved_item_id} has been triggered.")
+                f"Pipeline with saved item id {pipeline_id} ran successfully with output: {output}.")
         else:
             ai_context.set_output('output', '', self)
             ai_context.add_to_log("No saved item id to trigger pipeline.")
